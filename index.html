@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Laser Controls</title>
+    <meta name="description" content="Laser Controls - A-Frame">
+    <script src="https://aframe.io/releases/0.9.1/aframe.min.js"></script>
+    <script src="components/intersect-color-change.js"></script>
+    <script src="components/menu-item-select.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: #212" antialias="true">
+      <a-assets>
+        <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
+        <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
+      </a-assets>
+
+      <a-cylinder id="ground" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
+      <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
+
+      <a-entity position="0 3.2 0" camera look-controls wasd-controls></a-entity>
+      <a-entity id="leftHand" hand-controls="left" laser-controls="hand: left" raycaster="objects: .collidable">
+        <a-entity geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#FFF" class="collidable" rotation="0 0 0">
+          <a-box scale="0.03 0.03 0.03" position="0.03 0.1 0.1" material="color: red" class="collidable" menu-item-select></a-box>
+        </a-entity>
+      </a-entity>
+      <a-entity id="rightHand" hand-controls="right" laser-controls="hand: right" raycaster="objects: .collidable; origin: 1 0 1" line="color: #118A7E"></a-entity>
+
+      <a-box scale="0.5 0.5 0.5" position="0.7 0.35 -2.2" intersect-color-change class="collidable"></a-box>
+    </a-scene>
+  </body>
+</html>
