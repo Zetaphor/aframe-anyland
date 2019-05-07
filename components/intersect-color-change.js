@@ -19,15 +19,5 @@ AFRAME.registerComponent('intersect-color-change', {
       console.log('mouseup');
       el.setAttribute('material', 'color', self.isMouseEnter ? '#24CAFF' : initialColor);
     });
-
-    el.addEventListener('mouseenter', function () {
-      el.setAttribute('material', 'color', '#24CAFF');
-      self.isMouseEnter = true;
-    });
-
-    el.addEventListener('mouseleave', function () {
-      el.setAttribute('material', 'color', initialColor);
-      self.isMouseEnter = false;
-    });
   }
 });
