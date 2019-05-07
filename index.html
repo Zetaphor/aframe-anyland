@@ -5,20 +5,22 @@
     <title>Laser Controls</title>
     <meta name="description" content="Laser Controls - A-Frame">
     <script src="https://aframe.io/releases/0.9.1/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.min.js"></script>
+    <script src="//cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/wmurphyrd/aframe-super-hands-component/master/dist/super-hands.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.3.0/dist/aframe-physics-system.min.js"></script>
     <script src="https://unpkg.com/aframe-physics-extras/dist/aframe-physics-extras.min.js"></script>
 
-    <script src="components/intersect-color-change.js"></script>
-    <script src="components/menu-item-select.js"></script>
+    <!-- <script src="components/intersect-color-change.js"></script> -->
+    <script src="components/menu-prim.js"></script>
+    <script src="components/static-grabbable.js"></script>
+    <script src="components/pointy-collisions.js"></script>
   </head>
   <body>
-    <a-scene background="color: #212" renderer="antialias: true" physics="debug: true">
+    <a-scene id="scene" background="color: #212" renderer="antialias: true" physics="debug: true">
       <a-assets>
         <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
-        <a-mixin id="touchable" collision-filter="group: touchable; collidesWith: default, hands, touchable"></a-mixin>
+        <a-mixin id="touchable" collision-filter="group: touchable; collidesWith: default, hands, touchable" grabbable></a-mixin>
         <a-mixin id="controller" physics-collider
             phase-shift
             collision-filter="group:hands; collidesWith: touchable; collisionForces: false"
@@ -27,8 +29,16 @@
             colliderEventProperty: els;
             colliderEndEvent: collisions;
             colliderEndEventProperty: clearedEls;"
+            sphere-collider="objects:.collidable; radius:0.1"
             raycaster="objects: .collidable"
             line="color: #118A7E"></a-mixin>
+
+        <a-mixin id="prim-box"
+          geometry="primitive: box; height: 0.2; width: 0.2; depth: 0.2"
+          material="color: red" class="collidable"
+          collision-filter="group: touchable; collidesWith: default, hands, touchable"
+          static-body hoverable static-grabbable
+          grabbable stretchable></a-mixin>
       </a-assets>
 
       <a-cylinder id="ground" static-body collision-filter="collidesWith: default, touchable" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
@@ -41,8 +51,8 @@
             mixin="controller"
             hand-controls="left"
             laser-controls="hand:left">
-          <a-entity geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#FFF" class="collidable" rotation="0 0 0">
-            <a-box scale="0.03 0.03 0.03" position="0.03 0.1 0.1" material="color: red" class="collidable" menu-item-select></a-box>
+          <a-entity id="primMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#FFF" class="collidable" rotation="0 0 0">
+            <a-box scale="0.03 0.03 0.03" position="0.03 0.1 0.1" material="color: red" class="collidable" menu-prim="shape:box"></a-box>
           </a-entity>
         </a-entity>
         <a-entity id="rightHand"
@@ -56,17 +66,20 @@
           mixin="touchable"
           scale="0.5 0.5 0.5"
           position="0.7 1 -2"
-          intersect-color-change
-          grabbable stretchable>
+          class="collidable"
+          stretchable>
         </a-box>
       <a-box dynamic-body
-          sleepy="speedLimit: 0.01; linearDamping: 0.99; angularDamping: 0.99"
           mixin="touchable"
           scale="0.5 0.5 0.5"
-          position="-0.2 1 -2"
-          intersect-color-change
+          position="-0.2 1.5 -2"
           class="collidable"
-          grabbable stretchable></a-box>
+          stretchable>
+          <a-sphere scale="0.2 0.5 0.2" position="0.5 -0.5 0.5" material="color:green"></a-sphere>
+          <a-sphere scale="0.2 0.5 0.2" position="-0.5 -0.5 -0.5" material="color:red"></a-sphere>
+          <a-sphere scale="0.2 0.5 0.2" position="0.5 -0.5 -0.5" material="color:blue"></a-sphere>
+          <a-sphere scale="0.2 0.5 0.2" position="-0.5 -0.5 0.5" material="color:yellow"></a-sphere>
+      </a-box>
     </a-scene>
   </body>
 </html>
