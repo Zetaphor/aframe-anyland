@@ -7,28 +7,71 @@
     <script src="https://aframe.io/releases/0.9.1/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/wmurphyrd/aframe-super-hands-component/master/dist/super-hands.js"></script>
-    <script src="components/intersect-color-change.js"></script>
-    <script src="components/menu-item-select.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.3.0/dist/aframe-physics-system.min.js"></script>
+    <script src="https://unpkg.com/aframe-physics-extras/dist/aframe-physics-extras.min.js"></script>
+
+    <!-- <script src="components/intersect-color-change.js"></script> -->
+    <!-- <script src="components/menu-item-select.js"></script> -->
   </head>
   <body>
-    <a-scene background="color: #212" antialias="true">
+    <a-scene background="color: #212" renderer="antialias: true" physics="debug: true">
       <a-assets>
         <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
+        <!-- <a-mixin id="collidable" collision-filter="group: collideObject; collidesWith: default, collideObject"></a-mixin> -->
       </a-assets>
 
-      <a-cylinder id="ground" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
+      <a-cylinder id="ground" static-body collision-filter="collidesWith: default, touchable" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
       <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
 
-      <a-entity position="0 3.2 0" camera look-controls wasd-controls></a-entity>
-      <a-entity id="leftHand" sphere-collider="objects: a-box" super-hands hand-controls="left" laser-controls="hand: left" raycaster="objects: .collidable">
-        <a-entity geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#FFF" class="collidable" rotation="0 0 0">
-          <a-box scale="0.03 0.03 0.03" position="0.03 0.1 0.1" material="color: red" class="collidable" menu-item-select></a-box>
-        </a-entity>
-      </a-entity>
-      <a-entity id="rightHand" sphere-collider="objects: a-box" super-hands hand-controls="right" laser-controls="hand: right" raycaster="objects: .collidable; origin: 1 0 1" line="color: #118A7E"></a-entity>
+      <a-entity id="rig" movement-controls="speed:0.1; controls:gamepad">
+        <a-entity camera look-controls="pointerLockEnabled: true" position="0 3.2 0"></a-entity>
 
-      <a-box scale="0.5 0.5 0.5" position="0.7 0.35 0" intersect-color-change class="collidable" grabbable stretchable></a-box>
+        <a-entity id="leftHand"
+            physics-collider phase-shift
+            collision-filter="group:hands; collidesWith: touchable; collisionForces: false"
+            static-body="shape: sphere; sphereRadius: 0.1"
+            super-hands="colliderEvent: collisions;
+              colliderEventProperty: els;
+              colliderEndEvent: collisions;
+              colliderEndEventProperty: clearedEls;"
+            hand-controls="left"
+            laser-controls="hand: left"
+            raycaster="objects: .collidable">
+          <a-entity geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#FFF" class="collidable" rotation="0 0 0">
+            <a-box scale="0.03 0.03 0.03" position="0.03 0.1 0.1" material="color: red" class="collidable" menu-item-select></a-box>
+          </a-entity>
+        </a-entity>
+        <a-entity id="rightHand"
+            physics-collider phase-shift
+            collision-filter="group:hands; collidesWith: touchable; collisionForces: false"
+            static-body="shape: sphere; sphereRadius: 0.1"
+            super-hands="colliderEvent: collisions;
+              colliderEventProperty: els;
+              colliderEndEvent: collisions;
+              colliderEndEventProperty: clearedEls;"
+            hand-controls="right"
+            laser-controls="hand: right"
+            raycaster="objects: .collidable; origin: 1 0 1"
+            line="color: #118A7E">
+          </a-entity>
+      </a-entity>
+
+      <a-box dynamic-body
+          collision-filter="group: touchable; collidesWith: default, hands, touchable"
+          scale="0.5 0.5 0.5"
+          position="0.7 1 -2"
+          intersect-color-change
+          grabbable stretchable>
+        </a-box>
+      <a-box dynamic-body
+          sleepy="speedLimit: 0.01; linearDamping: 0.99; angularDamping: 0.99"
+          collision-filter="group: touchable; collidesWith: default, hands, touchable"
+          scale="0.5 0.5 0.5"
+          position="-0.2 1 -2"
+          intersect-color-change
+          class="collidable"
+          grabbable stretchable></a-box>
     </a-scene>
   </body>
 </html>
