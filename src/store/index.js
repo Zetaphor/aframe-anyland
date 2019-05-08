@@ -13,6 +13,8 @@ export default new Vuex.Store({
     debugPhysics: false,
     buildMode: false,
     showLasers: true,
+    showLeftLaser: false,
+    showRightLaser: false,
     laserColor: '#118A7E',
     enableFlying: false,
     moveSpeed: 0.1,
@@ -22,12 +24,12 @@ export default new Vuex.Store({
   },
 
   getters: {
-    raycaster: state => {
-      return state.showLasers ? 'objects: .collidable' : false
+    raycaster: () => {
+      return `objects: .collidable; enabled: false; showLine: false`
     },
 
     raycasterLine: state => {
-      return state.showLasers ? `color: ${state.laserColor}` : false
+      return `color: ${state.laserColor};`
     }
   },
 
@@ -42,6 +44,40 @@ export default new Vuex.Store({
 
     setPhysicsDebug (state, val) {
       state.debugPhysics = val
+    },
+
+    setShowLasers (state, val) {
+      this.showLasers = val
+    },
+
+    setShowLeftLaser (state, val) {
+      this.showLeftLaser = val
+    },
+
+    setShowRightLaser (state, val) {
+      this.showRightLaser = val
+    }
+  },
+
+  actions: {
+    toggleLasers ({ commit }, val) {
+      commit('setShowLasers', val)
+      let leftHand = document.querySelector('#leftHand')
+      let rightHand = document.querySelector('#rightHand')
+      leftHand.setAttribute('raycaster', {enabled: val, showLine: val})
+      rightHand.setAttribute('raycaster', {enabled: val, showLine: val})
+    },
+
+    toggleLeftLaser ({ commit }, val) {
+      commit('setShowLeftLaser', val)
+      let leftHand = document.querySelector('#leftHand')
+      leftHand.setAttribute('raycaster', {enabled: val, showLine: val})
+    },
+
+    toggleRightLaser ({ commit }, val) {
+      commit('setShowRightLaser', val)
+      let rightHand = document.querySelector('#rightHand')
+      rightHand.setAttribute('raycaster', {enabled: val, showLine: val})
     }
   }
 })

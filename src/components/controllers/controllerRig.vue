@@ -35,15 +35,15 @@
 
     <a-entity id="leftHand"
         mixin="controller"
-        hand-controls="left">
-        :laser-controls="$store.state.showLasers ? 'hand:left' : false"
+        hand-controls="left"
+        laser-controls="hand:left">
       <prim-menu></prim-menu>
       <settings-menu></settings-menu>
     </a-entity>
     <a-entity id="rightHand"
         mixin="controller"
         hand-controls="right"
-        :laser-controls="$store.state.showLasers ? 'hand:right' : false">
+        laser-controls="hand:right">
     </a-entity>
   </a-entity>
 </template>
@@ -80,10 +80,14 @@ export default {
   methods: {
     buttonDown: function (button) {
       console.log('Down', button)
+      if (button === 'y') this.$store.dispatch('toggleLeftLaser', true)
+      if (button === 'b') this.$store.dispatch('toggleRightLaser', true)
     },
 
     buttonUp: function (button) {
       console.log('Up', button)
+      if (button === 'y') this.$store.dispatch('toggleLeftLaser', false)
+      if (button === 'b') this.$store.dispatch('toggleRightLaser', false)
     },
 
     checkController: function () {
