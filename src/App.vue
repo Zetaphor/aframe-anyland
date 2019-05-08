@@ -32,18 +32,15 @@
           <a-sphere scale="0.2 0.5 0.2" position="0.5 -0.5 -0.5" material="color:blue"></a-sphere>
           <a-sphere scale="0.2 0.5 0.2" position="-0.5 -0.5 0.5" material="color:yellow"></a-sphere>
       </a-box>
-
-      <!-- <a-gui-button width="3" height="3" position="-0.2 1.5 -3"></a-gui-button> -->
     </a-scene>
   </div>
 </template>
 
 <script>
+// require('@/components/aframe/intersect-color-change')
+require('@/components/static-grabbable')
 
-// require('./components/aframe/intersect-color-change')
-require('./components/aframe/static-grabbable')
-
-import MixinMenuPrims from '@/components/menu/mixinMenuPrims.vue'
+import MixinMenuPrims from '@/components/menus/mixinMenuPrims.vue'
 import MixinController from '@/components/controllers/mixinController.vue'
 import ControllerRig from '@/components/controllers/controllerRig.vue'
 
@@ -52,7 +49,7 @@ export default {
   components: {
     MixinMenuPrims,
     MixinController,
-    ControllerRig
+    ControllerRig,
   },
 
   data: function () {
