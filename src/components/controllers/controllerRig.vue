@@ -1,5 +1,36 @@
 <template>
-  <a-entity id="rig" :movement-controls="`controls: gamepad; speed:${$store.state.moveSpeed}; fly:${$store.state.enableFlying}`">
+  <a-entity id="rig"
+    :movement-controls="`controls: gamepad; speed:${$store.state.moveSpeed}; fly:${$store.state.enableFlying}`"
+    @gripdown="buttonDown('gripPress')"
+    @gripup="buttonUp('gripPress')"
+    @gripclose="buttonDown('gripSqueeze')"
+    @gripopen="buttonUp('gripSqueeze')"
+    @trackpaddown="buttonDown('trackpad')"
+    @trackpadup="buttonUp('trackpad')"
+    @triggerdown="buttonDown('trigger')"
+    @triggerup="buttonUp('trigger')"
+    @abuttondown="buttonDown('a')"
+    @abuttonup="buttonUp('a')"
+    @bbuttondown="buttonDown('b')"
+    @bbuttonup="buttonUp('b')"
+    @xbuttondown="buttonDown('x')"
+    @xbuttonup="buttonUp('x')"
+    @ybuttondown="buttonDown('y')"
+    @ybuttonup="buttonUp('y')"
+    @pointup="buttonUp('point')"
+    @pointdown="buttonDown('point')"
+    @thumbup="buttonUp('thumb')"
+    @thumbdown="buttonDown('thumb')"
+    @pointingstart="buttonDown('pointing')"
+    @pointingend="buttonUp('pointing')"
+    @pistolstart="buttonDown('pistol')"
+    @pistolend="buttonUp('pistol')"
+    @thumbstickdown="buttonDown('thumbstick')"
+    @thumbstickup="buttonUp('thumbstick')"
+    @mousedown="buttonDown('mouse')"
+    @mouseup="buttonUp('mouse')"
+    @touchstart="buttonStart('touch')"
+    @touchend="buttonStop('touch')">
     <a-entity id="camera" camera position="0 3.2 0"></a-entity>
 
     <a-entity id="leftHand"
@@ -43,19 +74,28 @@ export default {
     let position = this.rig.getAttribute('position')
     this.$store.commit('setInitialZ', position.y)
     window.readControllerFrame = true
-    requestAnimationFrame(this.controllerLoop)
+    requestAnimationFrame(this.checkController)
   },
 
   methods: {
-    controllerLoop: function () {
+    buttonDown: function (button) {
+      console.log('Down', button)
+    },
+
+    buttonUp: function (button) {
+      console.log('Up', button)
+    },
+
+    checkController: function () {
         let gamepad = navigator.getGamepads && navigator.getGamepads()[1]
-        if (gamepad) {
-          let axes = gamepad.axes
-          if (axes[0] <= -0.5) this.rotateRig(true)
-          else if (axes[0] >= 0.5) this.rotateRig(false)
-          else this.snapReady = true
-        }
-      requestAnimationFrame(this.controllerLoop)
+        if (gamepad) this.checkRotation(gamepad.axes)
+      requestAnimationFrame(this.checkController)
+    },
+
+    checkRotation: function (axes) {
+      if (axes[0] <= -0.5) this.rotateRig(true)
+      else if (axes[0] >= 0.5) this.rotateRig(false)
+      else this.snapReady = true
     },
 
     rotateRig: function (left = false) {

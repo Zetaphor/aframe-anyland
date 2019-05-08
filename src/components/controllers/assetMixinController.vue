@@ -6,7 +6,11 @@
     super-hands="colliderEvent: collisions;
     colliderEventProperty: els;
     colliderEndEvent: collisions;
-    colliderEndEventProperty: clearedEls;"
+    colliderEndEventProperty: clearedEls;
+    grabStartButtons:triggerdown gripclose;
+    grabEndButtons:triggerup gripopen;
+    stretchStartButtons: gripclose;
+    stretchEndButtons: gripopen;"
     sphere-collider="objects:.collidable; radius:0.1"
     :raycaster="$store.getters.raycaster"
     :line="$store.getters.raycasterLine"></a-mixin>

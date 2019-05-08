@@ -22,7 +22,9 @@ Vue.config.ignoredElements = [
   'a-text'
 ]
 
-new Vue({
+const windowVue = new Vue({
   store,
   render: h => h(App),
 }).$mount('#app')
+
+window.vueObj = windowVue
