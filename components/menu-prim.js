@@ -5,25 +5,27 @@
  */
 AFRAME.registerComponent('menu-prim', {
   schema: {
-    shape: { type: 'string', default: 'box' }
+    shape: {default: 'box' }
   },
 
   init: function () {
     const el = this.el
     const scene = document.querySelector('#scene')
     const leftHand = document.querySelector('#leftHand')
+    let data = this.data
 
-    el.addEventListener('hover-start', function (evt) {
-      console.log('menu-hover')
+    el.addEventListener('mouseenter', function (evt) {
+      el.setAttribute('material', 'color', '#EF2D5E')
+    })
+
+    el.addEventListener('mouseleave', function (evt) {
+      el.setAttribute('material', 'color', '#FFF')
     })
 
     el.addEventListener('mousedown', function (evt) {
-      el.setAttribute('material', 'color', '#EF2D5E')
+      el.setAttribute('material', 'color', '#red')
       const newPrimEl = document.createElement('a-entity')
-
-      // console.log(this.data)
-      // newPrimEl.setAttribute('mixin', 'prim-' + this.data.type);
-      newPrimEl.setAttribute('mixin', 'prim-box')
+      newPrimEl.setAttribute('mixin', 'prim-' + data.shape)
 
       let position = leftHand.body.position
       position.y += 0.5
@@ -32,7 +34,7 @@ AFRAME.registerComponent('menu-prim', {
     });
 
     el.addEventListener('mouseup', function (evt) {
-      el.setAttribute('material', 'color', 'white')
+      el.setAttribute('material', 'color', '#FFF')
     });
   }
 });
