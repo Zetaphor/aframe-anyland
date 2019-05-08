@@ -12,7 +12,12 @@ AFRAME.registerComponent('menu-prim', {
     const el = this.el
     const scene = document.querySelector('#scene')
     const leftHand = document.querySelector('#leftHand')
+    const primMenu = document.querySelector('#primMenu')
     let data = this.data
+
+    function checkVisible () {
+      return primMenu.getAttribute('visible')
+    }
 
     el.addEventListener('mouseenter', function (evt) {
       el.setAttribute('material', 'color', '#EF2D5E')
@@ -23,7 +28,8 @@ AFRAME.registerComponent('menu-prim', {
     })
 
     el.addEventListener('mousedown', function (evt) {
-      el.setAttribute('material', 'color', '#red')
+      if (!checkVisible()) return
+      el.setAttribute('material', 'color', 'red')
       const newPrimEl = document.createElement('a-entity')
       newPrimEl.setAttribute('mixin', 'prim-' + data.shape)
 
@@ -34,6 +40,7 @@ AFRAME.registerComponent('menu-prim', {
     });
 
     el.addEventListener('mouseup', function (evt) {
+      if (!checkVisible()) return
       el.setAttribute('material', 'color', '#FFF')
     });
   }
