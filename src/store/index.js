@@ -9,8 +9,9 @@ export default new Vuex.Store({
   strict: debug,
 
   state: {
-    initialZ: null,
-    debugPhysics: false,
+    objectCollisionFilter: 'default, hands, touchable',
+    raycastObjectsFilter: '.collidable',
+
     buildMode: false,
     showLasers: true,
     showLeftLaser: false,

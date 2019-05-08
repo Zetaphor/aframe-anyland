@@ -7,8 +7,8 @@
     colliderEventProperty: els;
     colliderEndEvent: collisions;
     colliderEndEventProperty: clearedEls;"
-    sphere-collider="objects:.collidable; radius:0.1"
-    raycaster="objects: .collidable"
+    :sphere-collider="`objects:${$store.state.raycastObjectsFilter}; radius:0.1`"
+    :raycaster="`objects: ${$store.state.raycastObjectsFilter}`"
     :line="$store.getters.raycasterLine"></a-mixin>
 </template>
 
