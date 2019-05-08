@@ -37,8 +37,8 @@
 </template>
 
 <script>
-// require('@/components/aframe/intersect-color-change')
-require('@/components/static-grabbable')
+// require('@/components/mixins-aframe/intersect-color-change')
+require('@/components/mixins-aframe/static-grabbable')
 
 import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
 import AssetMixinController from '@/components/controllers/assetMixinController.vue'
