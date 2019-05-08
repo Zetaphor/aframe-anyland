@@ -98,7 +98,7 @@ export default {
 
       let position = leftHand.body.position
       position.y += 0.5
-      newPrim.setAttribute('position', position);
+      newPrim.setAttribute('position', position)
       scene.appendChild(newPrim)
     }
   }

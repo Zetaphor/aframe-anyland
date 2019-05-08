@@ -13,6 +13,11 @@ export default new Vuex.Store({
     raycastObjectsFilter: '.collidable',
 
     buildMode: false,
+    newObjectEl: null,
+    newObjectPrims: [],
+
+    initialZ: null,
+    debugPhysics: true,
     showLasers: true,
     showLeftLaser: false,
     showRightLaser: false,
@@ -44,11 +49,27 @@ export default new Vuex.Store({
     },
 
     setShowLeftLaser (state, val) {
-      this.showLeftLaser = val
+      state.showLeftLaser = val
     },
 
     setShowRightLaser (state, val) {
-      this.showRightLaser = val
+      state.showRightLaser = val
+    },
+
+    setBuildMode (state, val) {
+      state.buildMode = val
+    },
+
+    addNewObjectPrim (state, primId) {
+      state.newObjectPrims.push(primId)
+    },
+
+    removeNewObjectPrim (state, primId) {
+      state.newObjectPrims.splice(state.newObjectPrims.indexOf(primId), 1)
+    },
+
+    clearNewObjectPrims (state) {
+      state.newObjectPrims = []
     }
   },
 
