@@ -39,6 +39,7 @@
         laser-controls="hand:left">
       <prim-menu></prim-menu>
       <settings-menu></settings-menu>
+      <create-menu></create-menu>
     </a-entity>
     <a-entity id="rightHand"
         mixin="controller"
@@ -51,9 +52,16 @@
 <script>
 import PrimMenu from '@/components/menus/primMenu.vue'
 import SettingsMenu from '@/components/menus/settingsMenu.vue'
+import CreateMenu from '@/components/menus/createMenu.vue'
 
 export default {
   name: 'controllerRig',
+
+  components: {
+    PrimMenu,
+    SettingsMenu,
+    CreateMenu
+  },
 
   data: function () {
     return {
@@ -116,11 +124,6 @@ export default {
       }
       this.rig.setAttribute('rotation', rotation)
     }
-  },
-
-  components: {
-    PrimMenu,
-    SettingsMenu
   }
 }
 </script>
