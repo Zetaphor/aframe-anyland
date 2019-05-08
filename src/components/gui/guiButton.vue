@@ -94,7 +94,7 @@ export default {
 
     hoverColor: {
       type: String,
-      default: window.key_grey_dark
+      default: window.key_grey_light
     },
 
     activeColor: {
