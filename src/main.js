@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueBus from 'vue-bus';
 
 Vue.config.productionTip = false
+Vue.use(VueBus)
+
 Vue.config.ignoredElements = [
   'a-scene',
   'a-assets',
@@ -12,7 +15,8 @@ Vue.config.ignoredElements = [
   'a-box',
   'a-cylinder',
   'a-cone',
-  'a-sphere'
+  'a-sphere',
+  'a-text'
 ]
 
 new Vue({
