@@ -1,7 +1,7 @@
 <template>
   <a-entity>
-    <a-entity @mousedown="toggleMenu" geometry="primitive:box; width:0.03; height: 0.03; depth: 0.03;" position="0 0 0.15" material="color:#333" class="collidable" rotation="0 0 0"></a-entity>
-    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#333" class="collidable" rotation="0 0 0">
+    <!-- <a-entity @mousedown="toggleMenu" geometry="primitive:box; width:0.03; height: 0.03; depth: 0.03;" position="0 0 0.15" material="color:#333" class="collidable" rotation="0 0 0"></a-entity> -->
+    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0.27" material="color:#333" class="collidable" rotation="0 0 0">
       <a-entity v-for="(prim, index) in prims" :key="index"
         class="collidable"
         :position="prim.position"
@@ -51,15 +51,17 @@ export default {
     this.$bus.on('hideLeftHandMenus', function () {
       that.showMenu = false
     })
+
+    this.$bus.on('showPrimMenu', function () {
+      that.showMenu = true
+    })
+
+    this.$bus.on('hidePrimMenu', function () {
+      that.showMenu = false
+    })
   },
 
   methods: {
-    toggleMenu: function () {
-      const show = !this.showMenu
-      this.$bus.emit('hideLeftHandMenus')
-      this.showMenu = show
-    },
-
     hoverStart: function (index) {
       this.$set(this.prims[index], 'color', 'red')
     },
@@ -77,9 +79,19 @@ export default {
       this.$set(this.prims[index], 'color', '#FFF')
     },
 
+    generatePrimId: function () {
+      return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      )
+    },
+
     create: function (type) {
       const newPrim = document.createElement('a-entity')
+      const newId = 'prim-'+ this.generatePrimId()
+
       newPrim.setAttribute('mixin', 'prim-' + type)
+      newPrim.setAttribute('id', newId)
+      this.$store.commit('addNewObjectPrim', newId)
 
       const scene = document.querySelector('#scene')
       const leftHand = document.querySelector('#leftHand')
