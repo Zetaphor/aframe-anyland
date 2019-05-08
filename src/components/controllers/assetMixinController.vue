@@ -12,7 +12,7 @@
     stretchStartButtons: gripclose;
     stretchEndButtons: gripopen;"
     sphere-collider="objects:.collidable; radius:0.1"
-    :raycaster="$store.getters.raycaster"
+    raycaster="objects: .collidable"
     :line="$store.getters.raycasterLine"></a-mixin>
 </template>
 
