@@ -10,7 +10,7 @@ export default new Vuex.Store({
 
   state: {
     buildMode: false,
-    showLasers: false,
+    showLasers: true,
     laserColor: '#118A7E',
     enableFlying: false,
     moveSpeed: 0.1,
@@ -25,7 +25,7 @@ export default new Vuex.Store({
     },
 
     raycasterLine: state => {
-      return state.showLasers ? `color${state.laserColor}` : false
+      return state.showLasers ? `color: ${state.laserColor}` : false
     }
   },
 
