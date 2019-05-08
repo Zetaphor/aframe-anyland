@@ -9,14 +9,14 @@
       position="0 0 0.01"
       :geometry="`primitive:box; width:${width-0.015}; height:${height-0.015}; depth:0.01;`"
       :material="`color:${buttonColor}`">
-      <a-text class="collidable" :value="text" :color="`${fontColor}`" align="center" position="0 0 0.01" :width="`${width * 2}`" :height="`${height * 2}`"></a-text>
+      <a-text class="collidable" :value="displayLabel" :color="`${fontColor}`" align="center" position="0 0 0.01" :width="`${width * 2}`" :height="`${height * 2}`"></a-text>
     </a-entity>
   </a-entity>
 </template>
 
 <script>
 export default {
-  name: 'guiButton',
+  name: 'guiToggleButton',
 
   data: function () {
     return {
@@ -30,6 +30,11 @@ export default {
       if (this.clicking) return this.activeColor
       else if (this.hovering) return this.hoverColor
       return this.backgroundColor
+    },
+
+    displayLabel: function () {
+      if (!this.value) return this.disabledLabel
+      else return this.enabledLabel
     }
   },
 
@@ -72,8 +77,18 @@ export default {
       required: true
     },
 
-    text: {
+    enabledLabel: {
       type: String,
+      required: true
+    },
+
+    disabledLabel: {
+      type: String,
+      required: true
+    },
+
+    value: {
+      type: Boolean,
       required: true
     },
 
@@ -104,3 +119,4 @@ export default {
   }
 }
 </script>
+

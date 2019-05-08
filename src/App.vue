@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-scene id="scene" background="color: #212" renderer="antialias: true" physics="debug: true">
+    <a-scene id="scene" background="color: #212" renderer="antialias: true" :physics="`debug:${$store.state.debugPhysics}`">
       <a-assets>
         <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
@@ -49,7 +49,7 @@ export default {
   components: {
     MixinMenuPrims,
     MixinController,
-    ControllerRig,
+    ControllerRig
   },
 
   data: function () {

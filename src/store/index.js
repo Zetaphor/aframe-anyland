@@ -9,6 +9,8 @@ export default new Vuex.Store({
   strict: debug,
 
   state: {
+    initialZ: null,
+    debugPhysics: false,
     buildMode: false,
     showLasers: true,
     laserColor: '#118A7E',
@@ -30,6 +32,16 @@ export default new Vuex.Store({
   },
 
   mutations: {
+    setFlying (state, val) {
+      state.enableFlying = val
+    },
 
+    setInitialZ (state, val) {
+      state.initialZ = val
+    },
+
+    setPhysicsDebug (state, val) {
+      state.debugPhysics = val
+    }
   }
 })

@@ -32,7 +32,16 @@ export default {
   },
 
   mounted () {
+    let that = this
+    this.$bus.on('resetZPos', function () {
+      let position = that.rig.getAttribute('position')
+      position.y = that.$store.state.initialZ
+      that.rig.setAttribute('position', position)
+    })
+
     this.rig = document.querySelector('#rig')
+    let position = this.rig.getAttribute('position')
+    this.$store.commit('setInitialZ', position.y)
     window.readControllerFrame = true
     requestAnimationFrame(this.controllerLoop)
   },
@@ -59,7 +68,7 @@ export default {
         if (left) rotation.y += this.$store.state.rotateSpeed
         else rotation.y -= this.$store.state.rotateSpeed
       }
-      rig.setAttribute('rotation', rotation)
+      this.rig.setAttribute('rotation', rotation)
     }
   },
 
