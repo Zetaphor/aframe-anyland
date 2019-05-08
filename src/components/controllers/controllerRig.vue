@@ -63,6 +63,8 @@ export default {
   },
 
   mounted () {
+    this.$store.dispatch('toggleLasers', false)
+
     let that = this
     this.$bus.on('resetZPos', function () {
       let position = that.rig.getAttribute('position')

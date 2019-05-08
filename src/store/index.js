@@ -24,10 +24,6 @@ export default new Vuex.Store({
   },
 
   getters: {
-    raycaster: () => {
-      return `objects: .collidable; enabled: false; showLine: false`
-    },
-
     raycasterLine: state => {
       return `color: ${state.laserColor};`
     }
@@ -46,10 +42,6 @@ export default new Vuex.Store({
       state.debugPhysics = val
     },
 
-    setShowLasers (state, val) {
-      this.showLasers = val
-    },
-
     setShowLeftLaser (state, val) {
       this.showLeftLaser = val
     },
@@ -60,12 +52,9 @@ export default new Vuex.Store({
   },
 
   actions: {
-    toggleLasers ({ commit }, val) {
-      commit('setShowLasers', val)
-      let leftHand = document.querySelector('#leftHand')
-      let rightHand = document.querySelector('#rightHand')
-      leftHand.setAttribute('raycaster', {enabled: val, showLine: val})
-      rightHand.setAttribute('raycaster', {enabled: val, showLine: val})
+    toggleLasers ({ dispatch }, val) {
+      dispatch('toggleLeftLaser', val)
+      dispatch('toggleRightLaser', val)
     },
 
     toggleLeftLaser ({ commit }, val) {
