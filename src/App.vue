@@ -5,8 +5,8 @@
         <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
         <a-mixin id="touchable" collision-filter="group: touchable; collidesWith: default, hands, touchable" grabbable></a-mixin>
-        <mixin-controller></mixin-controller>
-        <mixin-menu-prims></mixin-menu-prims>
+        <asset-mixin-controller></asset-mixin-controller>
+        <asset-mixin-menu-prims></asset-mixin-menu-prims>
       </a-assets>
 
       <a-cylinder id="ground" static-body collision-filter="collidesWith: default, touchable" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
@@ -40,15 +40,15 @@
 // require('@/components/aframe/intersect-color-change')
 require('@/components/static-grabbable')
 
-import MixinMenuPrims from '@/components/menus/mixinMenuPrims.vue'
-import MixinController from '@/components/controllers/mixinController.vue'
+import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
+import AssetMixinController from '@/components/controllers/assetMixinController.vue'
 import ControllerRig from '@/components/controllers/controllerRig.vue'
 
 export default {
   name: 'app',
   components: {
-    MixinMenuPrims,
-    MixinController,
+    AssetMixinMenuPrims,
+    AssetMixinController,
     ControllerRig
   },
 

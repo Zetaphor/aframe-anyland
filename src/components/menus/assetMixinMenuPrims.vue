@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: 'mixinMenuPrims'
+  name: 'assetMixinMenuPrims'
 }
 </script>
 
