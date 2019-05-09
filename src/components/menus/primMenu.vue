@@ -87,8 +87,8 @@ export default {
       newPrim.setAttribute('id', newId)
       this.$store.commit('addNewObjectPrim', newId)
 
-      const scene = document.querySelector('#scene')
-      const leftHand = document.querySelector('#leftHand')
+      let scene = document.querySelector('#scene')
+      let leftHand = document.querySelector('#leftHand')
 
       let position = leftHand.body.position
       position.y += 0.5
