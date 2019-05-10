@@ -10,7 +10,6 @@ const componentMaps = {
   'static-grabbable': true,
   grabbable: false,
   material: true,
-  scale: true,
   sleepy: false,
   stretchable: false,
   hoverable: false,
@@ -22,7 +21,7 @@ window.aFrameSerialize = function (entityId) {
     root: {}
   }
 
-  let entity = document.querySelector('#' + entityId)
+  let entity = document.getElementById(entityId)
   entityJson.root = serializePrim(entity)
   if (entity.childNodes.length) {
     entityJson['children'] = []
@@ -61,7 +60,7 @@ window.aFrameDeserialize = function (objectJson) {
   for (let index = 0; index < objectJson.children.length; index++) {
     newObject.appendChild(deserializePrim(objectJson.children[index]))
   }
-  document.querySelector('#scene').appendChild(newObject)
+  window._elScene.appendChild(newObject)
   newObject.addEventListener('body-loaded', function () {
     newObject.body.updateBoundingRadius()
     newObject.body.updateMassProperties()

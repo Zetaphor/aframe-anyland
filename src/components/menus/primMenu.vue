@@ -105,19 +105,14 @@ export default {
 
     create: function (name) {
       let newPrim = document.createElement('a-entity')
-      let newId = 'prim-'+ this.$store.getters.generateUid
-
       newPrim.setAttribute('mixin', 'prim-' + name)
-      newPrim.setAttribute('id', newId)
-      this.$store.commit('addNewObjectPrim', newId)
+      newPrim.setAttribute('id', 'prim-'+ this.$store.getters.generateUid)
+      this.$store.commit('addNewObjectPrim', 'prim-'+ this.$store.getters.generateUid)
 
-      let scene = document.querySelector('#scene')
-      let leftHand = document.querySelector('#leftHand')
-
-      let position = leftHand.body.position
+      let position = window._elLeftHand.body.position
       position.y += 0.5
       newPrim.setAttribute('position', position)
-      scene.appendChild(newPrim)
+      window._elScene.appendChild(newPrim)
     }
   }
 }

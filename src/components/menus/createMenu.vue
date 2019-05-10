@@ -53,8 +53,8 @@ export default {
       if (!this.$store.state.newObjectPrims.length) return
 
       let primEls = []
-      this.$store.state.newObjectPrims.forEach((primId) => {
-        let primEl = document.querySelector('#' + primId)
+      for (let index = 0; index < this.$store.state.newObjectPrims.length; index++) {
+        let primEl = document.getElementById(this.$store.state.newObjectPrims[index])
         primEls.push({
           position: primEl.getAttribute('position'),
           rotation: primEl.getAttribute('rotation'),
@@ -63,7 +63,7 @@ export default {
           material: primEl.getAttribute('material')
         })
         primEl.remove()
-      })
+      }
 
       let newObject = document.createElement('a-entity')
       let newObjectId = 'obj-' + window.generateUid()
@@ -85,26 +85,25 @@ export default {
         newObject.setAttribute('scale', primEls[0].scale)
       } else {
         let rootPos = primEls[0].position
-        primEls.forEach((prim) => {
+        for (let index = 0; index < primEls.length; index++) {
           let newPrim = document.createElement('a-entity')
           newPrim.setAttribute('id', 'prim-' + window.generateUid())
           newPrim.setAttribute('position', {
-            x: (rootPos.x - prim.position.x),
-            y: (rootPos.y - prim.position.y),
-            z: (rootPos.z - prim.position.z)
+            x: (rootPos.x - primEls[index].position.x),
+            y: (rootPos.y - primEls[index].position.y),
+            z: (rootPos.z - primEls[index].position.z)
           })
-          newPrim.setAttribute('geometry', prim.geometry)
-          newPrim.setAttribute('rotation', prim.rotation)
-          newPrim.setAttribute('scale', prim.scale)
-          newPrim.setAttribute('material', prim.material)
+          newPrim.setAttribute('geometry', primEls[index].geometry)
+          newPrim.setAttribute('rotation', primEls[index].rotation)
+          newPrim.setAttribute('scale', primEls[index].scale)
+          newPrim.setAttribute('material', primEls[index].material)
           newObject.appendChild(newPrim)
-        })
+        }
       }
 
       this.$store.commit('clearNewObjectPrims')
 
-      let scene = document.querySelector('#scene')
-      scene.appendChild(newObject)
+      window._elScene.appendChild(newObject)
 
       newObject.addEventListener('body-loaded', function() {
         newObject.setAttribute('data-objjson', JSON.stringify(window.aFrameSerialize(newObjectId)))

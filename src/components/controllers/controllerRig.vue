@@ -67,11 +67,17 @@ export default {
     return {
       rig: null,
       camera: null,
-      snapReady: false
+      snapReady: false,
+      gamepad: null
     }
   },
 
   mounted () {
+    window._elLeftHand = document.getElementById('leftHand')
+    window._elRightHand = document.getElementById('rightHand')
+
+    this.gamepad = navigator.getGamepads && navigator.getGamepads()[1]
+
     this.$store.dispatch('toggleLasers', false)
 
     let that = this
@@ -81,12 +87,12 @@ export default {
       that.rig.setAttribute('position', position)
     })
 
-    this.rig = document.querySelector('#rig')
-    this.camera = document.querySelector('#camera')
+    this.rig = document.getElementById('rig')
+    this.camera = document.getElementById('camera')
     let position = this.rig.getAttribute('position')
     this.$store.commit('setInitialZ', position.y)
     window.readControllerFrame = true
-    requestAnimationFrame(this.checkController)
+    requestAnimationFrame(this.checkRotation)
   },
 
   methods: {
@@ -102,15 +108,12 @@ export default {
       if (button === 'b') this.$store.dispatch('toggleRightLaser', false)
     },
 
-    checkController: function () {
-        let gamepad = navigator.getGamepads && navigator.getGamepads()[1]
-        if (gamepad) this.checkRotation(gamepad.axes)
-      requestAnimationFrame(this.checkController)
-    },
-
-    checkRotation: function (axes) {
-      if (axes[0] <= -0.5) this.rotateRig(true)
-      else if (axes[0] >= 0.5) this.rotateRig(false)
+    checkRotation: function () {
+      requestAnimationFrame(this.checkRotation)
+      if (!this.gamepad) this.gamepad = navigator.getGamepads && navigator.getGamepads()[1]
+      if (!this.gamepad) return
+      if (this.gamepad.axes[0] <= -0.5) this.rotateRig(true)
+      else if (this.gamepad.axes[0] >= 0.5) this.rotateRig(false)
       else this.snapReady = true
     },
 

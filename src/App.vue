@@ -54,6 +54,10 @@ export default {
     ControllerRig
   },
 
+  mounted () {
+      window._elScene = document.getElementById('scene')
+  },
+
   data: function () {
     return {
       show: false
