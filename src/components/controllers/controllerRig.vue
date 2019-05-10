@@ -89,13 +89,13 @@ export default {
 
   methods: {
     buttonDown: function (button) {
-      console.log('Down', button)
+      // console.log('Down', button)
       if (button === 'y') this.$store.dispatch('toggleLeftLaser', true)
       if (button === 'b') this.$store.dispatch('toggleRightLaser', true)
     },
 
     buttonUp: function (button) {
-      console.log('Up', button)
+      // console.log('Up', button)
       if (button === 'y') this.$store.dispatch('toggleLeftLaser', false)
       if (button === 'b') this.$store.dispatch('toggleRightLaser', false)
     },
