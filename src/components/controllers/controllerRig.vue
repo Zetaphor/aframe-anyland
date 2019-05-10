@@ -66,6 +66,7 @@ export default {
   data: function () {
     return {
       rig: null,
+      camera: null,
       snapReady: false
     }
   },
@@ -81,6 +82,7 @@ export default {
     })
 
     this.rig = document.querySelector('#rig')
+    this.camera = document.querySelector('#camera')
     let position = this.rig.getAttribute('position')
     this.$store.commit('setInitialZ', position.y)
     window.readControllerFrame = true
