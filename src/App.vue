@@ -1,13 +1,12 @@
 <template>
   <div>
-    <a-scene id="scene" background="color: #212" renderer="antialias: true" :physics="`debug:${$store.state.debugPhysics}`">
+    <a-scene id="scene" background="color: #212" renderer="antialias: true" :physics="`debug:${$store.state.debugPhysics}; gravity:${$store.state.gravity}`">
       <a-assets>
         <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
         <a-mixin id="touchable" :collision-filter="`group: touchable; collidesWith:${$store.state.objectCollisionFilter}`" grabbable></a-mixin>
         <asset-mixin-controller></asset-mixin-controller>
         <asset-mixin-menu-prims></asset-mixin-menu-prims>
-        <asset-mixin-create-object></asset-mixin-create-object>
       </a-assets>
 
       <a-cylinder id="ground" static-body collision-filter="collidesWith: default, touchable" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
@@ -20,12 +19,14 @@
           scale="0.5 0.5 0.5"
           position="0.7 1 -2"
           class="collidable"
+          sleepy
           stretchable>
         </a-box>
-      <a-box dynamic-body
+      <a-box dynamic-body id="dsa"
           mixin="touchable"
           scale="0.5 0.5 0.5"
           position="-0.2 1.5 -2"
+          sleepy
           class="collidable"
           stretchable>
           <a-sphere scale="0.2 0.5 0.2" position="0.5 -0.5 0.5" material="color:green"></a-sphere>
