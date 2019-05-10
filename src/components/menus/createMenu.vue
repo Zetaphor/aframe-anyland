@@ -42,51 +42,74 @@ export default {
     createObject: function () {
       this.$store.commit('setBuildMode', true)
       this.$bus.emit('showPrimMenu')
-      const newObject = document.createElement('a-entity')
     },
 
     finishObject: function () {
       this.$store.commit('setBuildMode', false)
       this.$bus.emit('hidePrimMenu')
 
+      if (!this.$store.state.newObjectPrims.length) return
+
       let primEls = []
-      this.$store.state.newObjectPrims.forEach((primId, index) => {
+      this.$store.state.newObjectPrims.forEach((primId) => {
         let primEl = document.querySelector('#' + primId)
         primEls.push({
           position: primEl.getAttribute('position'),
           rotation: primEl.getAttribute('rotation'),
           scale: primEl.getAttribute('scale'),
           geometry: primEl.getAttribute('geometry'),
-          material: primEl.getAttribute('geometry')
+          material: primEl.getAttribute('material')
         })
         primEl.remove()
       })
 
-      console.log(primEls)
-
+      let newObjectId = 'obj-' + window.generateUid()
       let newObject = document.createElement('a-entity')
-      newObject.setAttribute('mixin', 'new-object')
-      newObject.setAttribute('geometry', primEls[0].geometry)
+      newObject.setAttribute('id', newObjectId)
       newObject.setAttribute('position', primEls[0].position)
-      newObject.setAttribute('rotation', primEls[0].rotation),
-      newObject.setAttribute('scale', primEls[0].scale)
       newObject.setAttribute('material', primEls[0].material)
-      primEls.forEach((prim, index) => {
-        if (!index) return
-        // Need to generate position offset by comparing position to the first element in the array, since that is the root object
-        let newPrim = document.createElement('a-entity')
-        newPrim.setAttribute('geometry', prim.geometry)
-        newPrim.setAttribute('position', prim.position)
-        newPrim.setAttribute('rotation', prim.rotation)
-        newPrim.setAttribute('scale', prim.scale)
-        newObject.setAttribute('material', prim.material)
-        newObject.appendChild(newPrim)
-      })
-      console.log(newObject)
-      scene.appendChild(newObject)
-      this.$store.commit('clearNewObjectPrims')
-    }
+      // newObject.setAttribute('dynamic-body', '')
+      newObject.setAttribute('static-body', '')
+      newObject.setAttribute('static-grabbable', '')
+      newObject.setAttribute('sleepy', '')
+      newObject.setAttribute('grabbable', '')
+      newObject.setAttribute('stretchable', '')
+      newObject.setAttribute('hoverable', '')
+      newObject.setAttribute('collision-filter', `group: touchable; collidesWith:${this.$store.state.objectCollisionFilter}`)
+      newObject.setAttribute('class', 'collidable')
 
+      if (primEls.length === 1) {
+        newObject.setAttribute('geometry', primEls[0].geometry)
+        newObject.setAttribute('rotation', primEls[0].rotation)
+        newObject.setAttribute('scale', primEls[0].scale)
+      } else {
+        let rootPos = primEls[0].position
+        primEls.forEach((prim) => {
+          let newPrim = document.createElement('a-entity')
+          let newPrimId = 'prim-' + window.generateUid()
+          newPrim.setAttribute('id', newPrimId)
+          newPrim.setAttribute('position', {
+            x: (rootPos.x - prim.position.x),
+            y: (rootPos.y - prim.position.y),
+            z: (rootPos.z - prim.position.z)
+          })
+          newPrim.setAttribute('geometry', prim.geometry)
+          newPrim.setAttribute('rotation', prim.rotation)
+          newPrim.setAttribute('scale', prim.scale)
+          newPrim.setAttribute('material', prim.material)
+          newObject.appendChild(newPrim)
+        })
+      }
+
+      this.$store.commit('clearNewObjectPrims')
+
+      let scene = document.querySelector('#scene')
+      scene.appendChild(newObject)
+
+      newObject.addEventListener('body-loaded', function() {
+        newObject.setAttribute('data-objjson', JSON.stringify(window.aFrameSerialize(newObjectId)))
+      })
+    }
   }
 }
 </script>
