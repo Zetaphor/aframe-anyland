@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-scene id="scene" background="color: #212" renderer="antialias: true" :physics="`debug:${$store.state.debugPhysics}; gravity:${$store.state.gravity}; iterations: ${$store.state.iterations}`">
+    <a-scene id="scene" background="color: #212" renderer="antialias: true" :physics="`debug:${$store.state.debugPhysics}; gravity:${$store.state.gravity}; iterations: ${$store.state.physicsUpdates}; friction: ${$store.state.iterations}; restitution: ${$store.state.bounciness}`">
       <a-assets>
         <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">

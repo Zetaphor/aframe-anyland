@@ -18,16 +18,18 @@ export default new Vuex.Store({
     newObjectEl: null,
     newObjectPrims: [],
 
-    initialZ: null,
-
     debugPhysics: true,
     gravity: -9.8,
-    iterations: 20,
+    physicsUpdates: 20,
+    friction: 0.01,
+    bounciness: 0.3,
 
     showLasers: true,
     showLeftLaser: false,
     showRightLaser: false,
     laserColor: '#118A7E',
+
+    initialZ: null,
     enableFlying: false,
     moveSpeed: 0.1,
     rotateSpeed: 0.5,
