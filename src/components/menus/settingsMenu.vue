@@ -5,6 +5,7 @@
         <gui-toggle-button rotation="0 90 0" position="0.011 0.1 0.07" :event="'toggleFlying'" @toggleFlying="toggleFlying" :width="0.1" :height="0.04" :value="$store.state.enableFlying" :disabledLabel="'Enable Flying'" :enabledLabel="'Disable Flying'"></gui-toggle-button>
         <gui-button rotation="0 90 0" position="0.011 0.1 -0.06" :event="'resetZPos'" :useBus="true" :width="0.1" :height="0.04" text="Reset Z Position"></gui-button>
         <gui-toggle-button rotation="0 90 0" position="0.011 -0.1 0.07" :event="'togglePhysicsDebug'" @togglePhysicsDebug="togglePhysicsDebug" :width="0.1" :height="0.04" :value="$store.state.debugPhysics" :disabledLabel="'Enable Wireframes'" :enabledLabel="'Disable Wireframes'"></gui-toggle-button>
+        <gui-toggle-button rotation="0 90 0" position="0.011 -0.1 -0.06" :event="'toggleSnapRotation'" @toggleSnapRotation="toggleSnapRotation" :width="0.1" :height="0.04" :value="$store.state.snapRotation" :disabledLabel="'Enable Snap Turning'" :enabledLabel="'Enable Smooth Turning'"></gui-toggle-button>
       </a-entity>
   </a-entity>
 </template>
@@ -47,6 +48,10 @@ export default {
 
     togglePhysicsDebug: function () {
       this.$store.commit('setPhysicsDebug', !this.$store.state.debugPhysics)
+    },
+
+    toggleSnapRotation: function () {
+      this.$store.commit('setSnapRotation', !this.$store.state.snapRotation)
     }
   }
 }

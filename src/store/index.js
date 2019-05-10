@@ -35,7 +35,6 @@ export default new Vuex.Store({
     rotateSpeed: 0.5,
     snapRotation: true,
     snapDegrees: 45
-
   },
 
   getters: {
@@ -79,6 +78,10 @@ export default new Vuex.Store({
 
     clearNewObjectPrims (state) {
       state.newObjectPrims = []
+    },
+
+    setSnapRotation (state, snapRotation) {
+      state.snapRotation = snapRotation
     }
   },
 
