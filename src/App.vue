@@ -42,7 +42,6 @@
 require('@/components/mixins-aframe/static-grabbable')
 
 import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
-import AssetMixinCreateObject from '@/components/menus/assetMixinCreateObject.vue'
 import AssetMixinController from '@/components/controllers/assetMixinController.vue'
 import ControllerRig from '@/components/controllers/controllerRig.vue'
 
@@ -50,7 +49,6 @@ export default {
   name: 'app',
   components: {
     AssetMixinMenuPrims,
-    AssetMixinCreateObject,
     AssetMixinController,
     ControllerRig
   },
