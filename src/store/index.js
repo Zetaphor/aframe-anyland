@@ -9,7 +9,9 @@ export default new Vuex.Store({
   strict: debug,
 
   state: {
+    handCollisionFilter: 'touchable, newPrims',
     objectCollisionFilter: 'default, hands, touchable',
+    newPrimCollisionFilter: 'hands',
     raycastObjectsFilter: '.collidable',
 
     buildMode: false,
