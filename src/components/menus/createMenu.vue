@@ -63,13 +63,12 @@ export default {
         primEl.remove()
       })
 
-      let newObjectId = 'obj-' + window.generateUid()
       let newObject = document.createElement('a-entity')
+      let newObjectId = 'obj-' + window.generateUid()
       newObject.setAttribute('id', newObjectId)
       newObject.setAttribute('position', primEls[0].position)
       newObject.setAttribute('material', primEls[0].material)
-      // newObject.setAttribute('dynamic-body', '')
-      newObject.setAttribute('static-body', '')
+      newObject.setAttribute('dynamic-body', 'mass: 0')
       newObject.setAttribute('static-grabbable', '')
       newObject.setAttribute('sleepy', '')
       newObject.setAttribute('grabbable', '')
@@ -86,8 +85,7 @@ export default {
         let rootPos = primEls[0].position
         primEls.forEach((prim) => {
           let newPrim = document.createElement('a-entity')
-          let newPrimId = 'prim-' + window.generateUid()
-          newPrim.setAttribute('id', newPrimId)
+          newPrim.setAttribute('id', 'prim-' + window.generateUid())
           newPrim.setAttribute('position', {
             x: (rootPos.x - prim.position.x),
             y: (rootPos.y - prim.position.y),

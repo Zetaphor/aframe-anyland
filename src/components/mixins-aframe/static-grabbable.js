@@ -6,24 +6,28 @@ module.exports.component = window.AFRAME.registerComponent('static-grabbable', {
 
     el.addEventListener('hover-start', function () {
       hovering = true
+      el.setAttribute('material', 'color', 'red')
     })
 
     el.addEventListener('hover-end', function () {
       hovering = false
+      el.setAttribute('material', 'color', 'white')
     })
 
     el.addEventListener('mousedown', function () {
       if (hovering) {
-        el.removeAttribute('static-body')
-        el.setAttribute('dynamic-body', '')
+        el.body.mass = 5
+        el.body.updateMassProperties()
+        el.body.wakeUp()
         dynamic = true
       }
     })
 
     el.addEventListener('mouseup', function () {
       if (dynamic) {
-        el.removeAttribute('dynamic-body')
-        el.setAttribute('static-body', '')
+        el.body.mass = 0
+        el.body.updateMassProperties()
+        el.body.sleep()
         dynamic = false
       }
     })
