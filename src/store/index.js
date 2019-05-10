@@ -19,8 +19,11 @@ export default new Vuex.Store({
     newObjectPrims: [],
 
     initialZ: null,
+
     debugPhysics: true,
     gravity: -9.8,
+    iterations: 20,
+
     showLasers: true,
     showLeftLaser: false,
     showRightLaser: false,
