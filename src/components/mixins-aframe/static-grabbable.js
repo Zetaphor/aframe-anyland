@@ -6,12 +6,10 @@ module.exports.component = window.AFRAME.registerComponent('static-grabbable', {
 
     el.addEventListener('hover-start', function () {
       hovering = true
-      el.setAttribute('material', 'color', 'red')
     })
 
     el.addEventListener('hover-end', function () {
       hovering = false
-      el.setAttribute('material', 'color', 'white')
     })
 
     el.addEventListener('mousedown', function () {
