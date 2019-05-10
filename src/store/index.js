@@ -20,6 +20,7 @@ export default new Vuex.Store({
 
     initialZ: null,
     debugPhysics: true,
+    gravity: -9.8,
     showLasers: true,
     showLeftLaser: false,
     showRightLaser: false,
@@ -29,15 +30,10 @@ export default new Vuex.Store({
     rotateSpeed: 0.5,
     snapRotation: true,
     snapDegrees: 45
+
   },
 
   getters: {
-    generateUid: function () {
-      return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-      )
-    },
-
     raycasterLine: state => {
       return `color: ${state.laserColor};`
     }
