@@ -34,6 +34,10 @@
           <a-sphere scale="0.2 0.5 0.2" position="0.5 -0.5 -0.5" material="color:blue"></a-sphere>
           <a-sphere scale="0.2 0.5 0.2" position="-0.5 -0.5 0.5" material="color:yellow"></a-sphere>
       </a-box>
+
+      <a-entity data-collides sleepy mixin="touchable" dynamic-body="mass:0" static-grabbable geometry="primitive:box; width: 0.9; height: 0.5; depth:0.05;" position="-0.2 1.5 -4" rotation="-30 0 0" material="color: #333;">
+        <a-entity id="keyboard" super-keyboard="hand: .keyboard-hand; imagePath:." position="0 0 0.06"></a-entity>
+      </a-entity>
     </a-scene>
   </div>
 </template>
