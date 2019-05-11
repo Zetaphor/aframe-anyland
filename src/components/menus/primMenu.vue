@@ -1,8 +1,8 @@
 <template>
   <a-entity>
-    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0.27" material="color:#333" data-collides rotation="0 0 0">
+    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0.27" material="color:#333" class="collides" rotation="0 0 0">
       <a-entity v-for="(prim, index) in prims" :key="index"
-        data-collides
+        class="collides"
         :position="prim.position"
         :scale="prim.scale"
         :geometry="`primitive:${prim.type}; arc: ${prim.arc || 0}`"
@@ -104,10 +104,12 @@ export default {
     },
 
     create: function (name) {
+      let newId = 'prim-' + window.generateUid()
       let newPrim = document.createElement('a-entity')
       newPrim.setAttribute('mixin', 'prim-' + name)
-      newPrim.setAttribute('id', 'prim-'+ this.$store.getters.generateUid)
-      this.$store.commit('addNewObjectPrim', 'prim-'+ this.$store.getters.generateUid)
+      newPrim.setAttribute('id', newId)
+      newPrim.setAttribute('class', 'collides')
+      this.$store.commit('addNewObjectPrim', newId)
 
       let position = window._elLeftHand.body.position
       position.y += 0.5

@@ -1,9 +1,9 @@
 <template>
   <a-entity>
-    <a-entity @mousedown="toggleMenu" geometry="primitive:box; width:0.03; height: 0.03; depth: 0.03;" position="0 0 0.15" material="color:red" data-collides rotation="0 0 0"></a-entity>
-    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#333" data-collides rotation="0 0 0">
-      <a-text color="#FFF" :value="`Total Parts: ${$store.state.newObjectPrims.length}`" position="0.011 0.0 0.07" rotation="0 90 0" width="0.5" height="0.5"></a-text>
-      <a-entity fps-counter position="0.011 0.1 0.1" rotation="0 90 0"></a-entity>
+    <a-entity @mousedown="toggleMenu" geometry="primitive:box; width:0.03; height: 0.03; depth: 0.03;" position="0 0 0.15" material="color:red" class="collides" rotation="0 0 0"></a-entity>
+    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0" material="color:#333" class="collides" rotation="0 0 0">
+      <a-text v-if="$store.state.buildMode" color="#FFF" :value="`Total Parts: ${$store.state.newObjectPrims.length}`" position="0.011 0.0 0.07" rotation="0 90 0" width="0.5" height="0.5"></a-text>
+      <a-entity fps-counter position="0.015 0.1 0.1" rotation="0 90 0"></a-entity>
       <gui-button v-if="!$store.state.buildMode" rotation="0 90 0" position="0.011 0.1 -0.06" @createObject="createObject" :event="'createObject'" :width="0.1" :height="0.04" text="Create New Object"></gui-button>
       <gui-button v-else rotation="0 90 0" position="0.011 0.1 -0.06" @finishObject="finishObject" :event="'finishObject'" :width="0.1" :height="0.04" text="Done"></gui-button>
     </a-entity>
@@ -30,6 +30,10 @@ export default {
     let that = this
     this.$bus.on('hideLeftHandMenus', function () {
       that.showMenu = false
+    })
+
+    this.$bus.on('showCreateMenu', function () {
+      that.showMenu = true
     })
   },
 
@@ -67,17 +71,12 @@ export default {
 
       let newObject = document.createElement('a-entity')
       let newObjectId = 'obj-' + window.generateUid()
+      newObject.setAttribute('mixin', 'new-object')
       newObject.setAttribute('id', newObjectId)
+      newObject.setAttribute('data-parentid', newObjectId)
+      newObject.setAttribute('class', 'collides')
       newObject.setAttribute('position', primEls[0].position)
       newObject.setAttribute('material', primEls[0].material)
-      newObject.setAttribute('dynamic-body', 'mass: 0')
-      newObject.setAttribute('static-grabbable', '')
-      newObject.setAttribute('sleepy', '')
-      newObject.setAttribute('grabbable', '')
-      newObject.setAttribute('stretchable', '')
-      newObject.setAttribute('hoverable', '')
-      newObject.setAttribute('collision-filter', `group: touchable; collidesWith:${this.$store.state.objectCollisionFilter}`)
-      newObject.setAttribute('class', 'collidable')
 
       if (primEls.length === 1) {
         newObject.setAttribute('geometry', primEls[0].geometry)
@@ -88,6 +87,8 @@ export default {
         for (let index = 0; index < primEls.length; index++) {
           let newPrim = document.createElement('a-entity')
           newPrim.setAttribute('id', 'prim-' + window.generateUid())
+          newPrim.setAttribute('data-parentid', newObjectId)
+          newPrim.setAttribute('class', 'collides')
           newPrim.setAttribute('position', {
             x: (rootPos.x - primEls[index].position.x),
             y: (rootPos.y - primEls[index].position.y),

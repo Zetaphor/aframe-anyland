@@ -42,6 +42,7 @@
       <prim-menu></prim-menu>
       <settings-menu></settings-menu>
       <create-menu></create-menu>
+      <selected-menu></selected-menu>
     </a-entity>
     <a-entity id="rightHand"
         mixin="controller"
@@ -57,6 +58,7 @@
 import PrimMenu from '@/components/menus/primMenu.vue'
 import SettingsMenu from '@/components/menus/settingsMenu.vue'
 import CreateMenu from '@/components/menus/createMenu.vue'
+import SelectedMenu from '@/components/menus/selectedMenu.vue'
 
 export default {
   name: 'controllerRig',
@@ -64,7 +66,8 @@ export default {
   components: {
     PrimMenu,
     SettingsMenu,
-    CreateMenu
+    CreateMenu,
+    SelectedMenu
   },
 
   data: function () {
@@ -73,7 +76,7 @@ export default {
       camera: null,
       snapReady: false,
       gamepad: null,
-      intersectionId: null
+      selectionId: null
     }
   },
 
@@ -102,7 +105,8 @@ export default {
 
   methods: {
     intersectionStart: function (evt) {
-      this.intersectionId = evt.detail.els[0].id
+      if (evt.detail.els[0].dataset.parentid) this.selectionId = evt.detail.els[0].dataset.parentid
+      else this.selectionId = null
     },
 
     buttonDown: function (button) {
@@ -124,7 +128,7 @@ export default {
     },
 
     checkForSelection: function () {
-      console.log('Check el', this.intersectionId)
+      if (this.selectionId) this.$bus.emit('selectObject', this.selectionId)
     },
 
     checkRotation: function () {
