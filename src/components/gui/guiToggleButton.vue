@@ -1,10 +1,10 @@
 <template>
   <a-entity
-    data-collides
+    class="collides"
     @mouseenter="startHover" @mouseleave="stopHover"
     :geometry="`primitive:box; width:${width}; height:${height}; depth:-0.01;`"
     :material="`color:${borderColor}`">
-    <a-entity data-collides
+    <a-entity class="collides"
       @mouseenter="startHover" @mouseleave="stopHover" @mousedown="startPress" @mouseup="stopPress"
       position="0 0 0.01"
       :geometry="`primitive:box; width:${width-0.015}; height:${height-0.015}; depth:0.01;`"

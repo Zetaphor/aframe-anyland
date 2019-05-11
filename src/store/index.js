@@ -12,7 +12,7 @@ export default new Vuex.Store({
     handCollisionFilter: 'touchable, newPrims',
     objectCollisionFilter: 'default, hands, touchable',
     newPrimCollisionFilter: 'hands',
-    raycastObjectsFilter: '[data-collides]',
+    raycastObjectsFilter: '.collides',
 
     buildMode: false,
     newObjectEl: null,
