@@ -18,7 +18,7 @@
           mixin="touchable"
           scale="0.5 0.5 0.5"
           position="0.7 1 -2"
-          class="collidable"
+          data-collides
           sleepy
           stretchable>
         </a-box>
@@ -27,7 +27,7 @@
           scale="0.5 0.5 0.5"
           position="-0.2 1.5 -2"
           sleepy
-          class="collidable"
+          data-collides
           stretchable>
           <a-sphere scale="0.2 0.5 0.2" position="0.5 -0.5 0.5" material="color:green"></a-sphere>
           <a-sphere scale="0.2 0.5 0.2" position="-0.5 -0.5 -0.5" material="color:red"></a-sphere>
@@ -45,6 +45,7 @@
 <script>
 // require('@/components/mixins-aframe/intersect-color-change')
 require('@/components/mixins-aframe/static-grabbable')
+// require('@/components/mixins-aframe/select-objects')
 
 import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
 import AssetMixinController from '@/components/controllers/assetMixinController.vue'

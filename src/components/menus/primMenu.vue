@@ -1,8 +1,8 @@
 <template>
   <a-entity>
-    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0.27" material="color:#333" class="collidable" rotation="0 0 0">
+    <a-entity v-if="showMenu" geometry="primitive:box; width:0.01; height: 0.25; depth: 0.25;" position="0 0.2 0.27" material="color:#333" data-collides rotation="0 0 0">
       <a-entity v-for="(prim, index) in prims" :key="index"
-        class="collidable"
+        data-collides
         :position="prim.position"
         :scale="prim.scale"
         :geometry="`primitive:${prim.type}; arc: ${prim.arc || 0}`"

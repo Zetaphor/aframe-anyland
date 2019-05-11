@@ -1,15 +1,15 @@
 <template>
   <a-entity
-    class="collidable"
+    data-collides
     @mouseenter="startHover" @mouseleave="stopHover"
     :geometry="`primitive:box; width:${width}; height:${height}; depth:-0.01;`"
     :material="`color:${borderColor}`">
-    <a-entity class="collidable"
+    <a-entity data-collides
       @mouseenter="startHover" @mouseleave="stopHover" @mousedown="startPress" @mouseup="stopPress"
       position="0 0 0.01"
       :geometry="`primitive:box; width:${width-0.015}; height:${height-0.015}; depth:0.01;`"
       :material="`color:${buttonColor}`">
-      <a-text class="collidable" :value="displayLabel" :color="`${fontColor}`" align="center" position="0 0 0.01" :width="`${width * 2}`" :height="`${height * 2}`"></a-text>
+      <a-text :value="displayLabel" :color="`${fontColor}`" align="center" position="0 0 0.01" :width="`${width * 2}`" :height="`${height * 2}`"></a-text>
     </a-entity>
   </a-entity>
 </template>
