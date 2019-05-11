@@ -36,7 +36,9 @@
     <a-entity id="leftHand"
         mixin="controller"
         hand-controls="left"
-        laser-controls="hand:left">
+        laser-controls="hand:left"
+        @raycaster-intersection="intersectionStart"
+        teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: grip; type: line; maxLength: 50">
       <prim-menu></prim-menu>
       <settings-menu></settings-menu>
       <create-menu></create-menu>
@@ -44,7 +46,9 @@
     <a-entity id="rightHand"
         mixin="controller"
         hand-controls="right"
-        laser-controls="hand:right">
+        laser-controls="hand:right"
+        @raycaster-intersection="intersectionStart"
+        teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: grip; type: line; maxLength: 50">
     </a-entity>
   </a-entity>
 </template>
@@ -68,7 +72,8 @@ export default {
       rig: null,
       camera: null,
       snapReady: false,
-      gamepad: null
+      gamepad: null,
+      intersectionId: null
     }
   },
 
@@ -96,6 +101,10 @@ export default {
   },
 
   methods: {
+    intersectionStart: function (evt) {
+      this.intersectionId = evt.detail.els[0].id
+    },
+
     buttonDown: function (button) {
       // console.log('Down', button)
       if (button === 'y') this.$store.dispatch('toggleLeftLaser', true)
@@ -104,8 +113,18 @@ export default {
 
     buttonUp: function (button) {
       // console.log('Up', button)
-      if (button === 'y') this.$store.dispatch('toggleLeftLaser', false)
-      if (button === 'b') this.$store.dispatch('toggleRightLaser', false)
+      if (button === 'y') {
+        this.$store.dispatch('toggleLeftLaser', false)
+        this.checkForSelection()
+      }
+      if (button === 'b') {
+        this.$store.dispatch('toggleRightLaser', false)
+        this.checkForSelection()
+      }
+    },
+
+    checkForSelection: function () {
+      console.log('Check el', this.intersectionId)
     },
 
     checkRotation: function () {
