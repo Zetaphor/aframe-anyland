@@ -1,6 +1,7 @@
 <template>
   <a-entity id="rig"
-    :movement-controls="`controls: gamepad; speed:${$store.state.moveSpeed}; fly:${$store.state.enableFlying}`"
+    :movement-controls="`speed:${$store.state.moveSpeed}; fly:${$store.state.enableFlying}`"
+    look-controls
     @gripdown="buttonDown('gripPress')"
     @gripup="buttonUp('gripPress')"
     @gripclose="buttonDown('gripSqueeze')"
