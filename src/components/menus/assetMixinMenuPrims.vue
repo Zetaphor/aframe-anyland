@@ -36,7 +36,6 @@
       grabbable stretchable></a-mixin>
 
     <a-mixin id="new-object"
-      dynamic-body="mass: 0"
       static-grabbable
       sleepy
       grabbable

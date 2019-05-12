@@ -73,16 +73,21 @@ export default {
       let newObjectId = 'obj-' + window.generateUid()
       newObject.setAttribute('mixin', 'new-object')
       newObject.setAttribute('id', newObjectId)
+      newObject.setAttribute('body', 'type: dynamic; mass: 0; shape: none;')
+      newObject.setAttribute('shape__main', 'shape: box; halfExtents: 0.5 0.5 0.5')
       newObject.setAttribute('data-parentid', newObjectId)
       newObject.setAttribute('class', 'collides')
       newObject.setAttribute('position', primEls[0].position)
       newObject.setAttribute('material', primEls[0].material)
+      newObject.setAttribute('geometry', primEls[0].geometry)
+      newObject.setAttribute('geometry', 'buffer', true)
+      newObject.setAttribute('geometry-merger', 'preserveOriginal: false')
 
       if (primEls.length === 1) {
-        newObject.setAttribute('geometry', primEls[0].geometry)
         newObject.setAttribute('rotation', primEls[0].rotation)
         newObject.setAttribute('scale', primEls[0].scale)
       } else {
+        newObject.setAttribute('material', 'visible: false')
         let rootPos = primEls[0].position
         for (let index = 0; index < primEls.length; index++) {
           let newPrim = document.createElement('a-entity')
@@ -95,6 +100,7 @@ export default {
             z: (rootPos.z - primEls[index].position.z)
           })
           newPrim.setAttribute('geometry', primEls[index].geometry)
+          newObject.setAttribute('geometry', 'buffer', true)
           newPrim.setAttribute('rotation', primEls[index].rotation)
           newPrim.setAttribute('scale', primEls[index].scale)
           newPrim.setAttribute('material', primEls[index].material)
