@@ -10,11 +10,12 @@
       </a-assets>
 
       <a-cylinder id="ground" static-body collision-filter="collidesWith: default, touchable" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
-      <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
+      <!-- <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky> -->
 
       <controller-rig></controller-rig>
 
-      <a-box dynamic-body id="testCube"
+      <!-- <a-entity dynamic-body id="testCube" geometry-merger="preserveOriginal: false"
+          geometry="primitive: box;"
           data-parentid="testCube"
           mixin="touchable"
           scale="0.5 0.5 0.5"
@@ -22,8 +23,9 @@
           class="collides"
           sleepy
           stretchable>
-        </a-box>
-      <a-box dynamic-body id="testObject"
+        </a-entity>
+      <a-entity dynamic-body id="testObject" geometry-merger="preserveOriginal: false"
+          geometry="primitive: box;"
           data-parentid="testObject"
           mixin="touchable"
           scale="0.5 0.5 0.5"
@@ -35,11 +37,12 @@
           <a-sphere scale="0.2 0.5 0.2" position="-0.5 -0.5 -0.5" material="color:red"></a-sphere>
           <a-sphere scale="0.2 0.5 0.2" position="0.5 -0.5 -0.5" material="color:blue"></a-sphere>
           <a-sphere scale="0.2 0.5 0.2" position="-0.5 -0.5 0.5" material="color:yellow"></a-sphere>
-      </a-box>
+      </a-entity> -->
 
-      <a-entity class="collides" sleepy mixin="touchable" dynamic-body="mass:0" static-grabbable geometry="primitive:box; width: 0.9; height: 0.5; depth:0.05;" position="-0.2 1.5 -4" rotation="-30 0 0" material="color: #333;">
+      <a-entity class="collides" instanced-mesh></a-entity>
+      <!-- <a-entity class="collides" sleepy mixin="touchable" dynamic-body="mass:0" static-grabbable geometry="primitive:box; width: 0.9; height: 0.5; depth:0.05;" position="-0.2 1.5 -4" rotation="-30 0 0" material="color: #333;">
         <a-entity id="keyboard" super-keyboard="hand: .keyboard-hand; imagePath:./img" position="0 0 0.06"></a-entity>
-      </a-entity>
+      </a-entity> -->
     </a-scene>
   </div>
 </template>
@@ -48,6 +51,7 @@
 // require('@/components/mixins-aframe/intersect-color-change')
 require('@/components/mixins-aframe/static-grabbable')
 // require('@/components/mixins-aframe/select-objects')
+require('@/components/instanced-mesh')
 
 import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
 import AssetMixinController from '@/components/controllers/assetMixinController.vue'

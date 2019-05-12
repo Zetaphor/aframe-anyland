@@ -19,7 +19,8 @@ Vue.config.ignoredElements = [
   'a-cylinder',
   'a-cone',
   'a-sphere',
-  'a-text'
+  'a-text',
+  'a-instancedmesh'
 ]
 
 const windowVue = new Vue({
