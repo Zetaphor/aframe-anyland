@@ -40,6 +40,11 @@ export default new Vuex.Store({
   getters: {
     raycasterLine: state => {
       return `color: ${state.laserColor};`
+    },
+
+    activeHand: state => {
+      if (state.showLeftLaser) return '#leftHand'
+      else return '#rightHand'
     }
   },
 

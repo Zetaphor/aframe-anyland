@@ -40,18 +40,19 @@
       </a-entity> -->
 
       <a-entity class="collides" instanced-mesh></a-entity>
-      <!-- <a-entity class="collides" sleepy mixin="touchable" dynamic-body="mass:0" static-grabbable geometry="primitive:box; width: 0.9; height: 0.5; depth:0.05;" position="-0.2 1.5 -4" rotation="-30 0 0" material="color: #333;">
-        <a-entity id="keyboard" super-keyboard="hand: .keyboard-hand; imagePath:./img" position="0 0 0.06"></a-entity>
-      </a-entity> -->
+      <a-entity class="collides" sleepy mixin="touchable" dynamic-body="mass:0" static-grabbable geometry="primitive:box; width: 0.9; height: 0.5; depth:0.05;" position="-0.2 1.5 -4" rotation="-30 0 0" material="color: #333;">
+        <a-entity id="keyboard" :super-keyboard="`hand: ${$store.getters.activeHand}; imagePath:./img`" position="0 0 0.06"></a-entity>
+      </a-entity>
     </a-scene>
   </div>
 </template>
 
 <script>
+require('three-instanced-mesh')(window.THREE)
 // require('@/components/mixins-aframe/intersect-color-change')
 require('@/components/mixins-aframe/static-grabbable')
 // require('@/components/mixins-aframe/select-objects')
-require('@/components/instanced-mesh')
+require('@/components/mixins-aframe/instanced-mesh')
 
 import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
 import AssetMixinController from '@/components/controllers/assetMixinController.vue'
