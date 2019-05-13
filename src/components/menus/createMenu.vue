@@ -56,65 +56,60 @@ export default {
 
       if (!this.$store.state.newObjectPrims.length) return
 
-      let primEls = []
-      for (let index = 0; index < this.$store.state.newObjectPrims.length; index++) {
-        let primEl = document.getElementById(this.$store.state.newObjectPrims[index])
-        primEls.push({
-          position: primEl.getAttribute('position'),
-          rotation: primEl.getAttribute('rotation'),
-          scale: primEl.getAttribute('scale'),
-          geometry: primEl.getAttribute('geometry'),
-          material: primEl.getAttribute('material')
-        })
-        primEl.remove()
+      let newObjectData = {
+        id: window.generateUid(),
+        geometryTypes: {}
       }
 
-      let newObject = document.createElement('a-entity')
-      let newObjectId = 'obj-' + window.generateUid()
-      newObject.setAttribute('mixin', 'new-object')
-      newObject.setAttribute('id', newObjectId)
-      newObject.setAttribute('body', 'type: dynamic; mass: 0; shape: none;')
-      newObject.setAttribute('shape__main', 'shape: box; halfExtents: 0.5 0.5 0.5')
-      newObject.setAttribute('data-parentid', newObjectId)
-      newObject.setAttribute('class', 'collides')
-      newObject.setAttribute('position', primEls[0].position)
-      newObject.setAttribute('material', primEls[0].material)
-      newObject.setAttribute('geometry', primEls[0].geometry)
-      newObject.setAttribute('geometry', 'buffer', true)
-      newObject.setAttribute('geometry-merger', 'preserveOriginal: false')
+      let rootEl = document.getElementById(this.$store.state.newObjectPrims[0])
 
-      if (primEls.length === 1) {
-        newObject.setAttribute('rotation', primEls[0].rotation)
-        newObject.setAttribute('scale', primEls[0].scale)
-      } else {
-        newObject.setAttribute('material', 'visible: false')
-        let rootPos = primEls[0].position
-        for (let index = 0; index < primEls.length; index++) {
-          let newPrim = document.createElement('a-entity')
-          newPrim.setAttribute('id', 'prim-' + window.generateUid())
-          newPrim.setAttribute('data-parentid', newObjectId)
-          newPrim.setAttribute('class', 'collides')
-          newPrim.setAttribute('position', {
-            x: (rootPos.x - primEls[index].position.x),
-            y: (rootPos.y - primEls[index].position.y),
-            z: (rootPos.z - primEls[index].position.z)
-          })
-          newPrim.setAttribute('geometry', primEls[index].geometry)
-          newObject.setAttribute('geometry', 'buffer', true)
-          newPrim.setAttribute('rotation', primEls[index].rotation)
-          newPrim.setAttribute('scale', primEls[index].scale)
-          newPrim.setAttribute('material', primEls[index].material)
-          newObject.appendChild(newPrim)
+      for (let index = 0; index < this.$store.state.newObjectPrims.length; index++) {
+        let newPart = {
+          id: 'part-' + window.generateUid()
         }
+
+        let primEl = document.getElementById(this.$store.state.newObjectPrims[index])
+
+        newPart.position = primEl.object3D.position.toArray()
+        newPart.rotation = primEl.object3D.rotation.toArray()
+        let newPartGeometry = primEl.getAttribute('geometry')
+
+        if (newPartGeometry.primitive === 'box') {
+          newPart.scale = [
+            newPartGeometry.width * primEl.object3D.scale.x,
+            newPartGeometry.height * primEl.object3D.scale.y,
+            newPartGeometry.depth * primEl.object3D.scale.z
+          ]
+        } else if (newPartGeometry.primitive === 'sphere') {
+          newPart.scale = [
+            newPartGeometry.radius * primEl.object3D.scale.x,
+            newPartGeometry.radius * primEl.object3D.scale.y,
+            newPartGeometry.radius * primEl.object3D.scale.z
+          ]
+        } else if (newPartGeometry.primitive === 'cylinder') {
+          newPart.scale = [
+            newPartGeometry.radius * primEl.object3D.scale.x,
+            newPartGeometry.radius * primEl.object3D.scale.y,
+            newPartGeometry.height * primEl.object3D.scale.z
+          ]
+          console.log(newPart.scale)
+        }
+
+        newPart.material = primEl.getAttribute('material')
+
+        if (typeof newObjectData.geometryTypes[newPartGeometry.primitive] === 'undefined') newObjectData.geometryTypes[newPartGeometry.primitive] = []
+        newObjectData.geometryTypes[newPartGeometry.primitive].push(newPart)
+        primEl.remove()
       }
 
       this.$store.commit('clearNewObjectPrims')
 
-      window._elScene.appendChild(newObject)
-
-      newObject.addEventListener('body-loaded', function() {
-        newObject.setAttribute('data-objjson', JSON.stringify(window.aFrameSerialize(newObjectId)))
-      })
+      let newInstancedMesh = document.createElement('a-instancemeshgroup')
+      newInstancedMesh.setAttribute('json', JSON.stringify(newObjectData))
+      newInstancedMesh.setAttribute('geometry', 'primitive: box')
+      newInstancedMesh.setAttribute('body', 'type: dynamic; mass: 5; shape: none;')
+      newInstancedMesh.setAttribute('shape__main', 'shape: box; halfExtents: 0.2 0.2 0.2')
+      window._elScene.appendChild(newInstancedMesh)
     }
   }
 }

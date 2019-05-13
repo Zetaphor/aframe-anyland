@@ -20,7 +20,7 @@ Vue.config.ignoredElements = [
   'a-cone',
   'a-sphere',
   'a-text',
-  'a-instancedmesh'
+  'a-instancemeshgroup',
 ]
 
 const windowVue = new Vue({
