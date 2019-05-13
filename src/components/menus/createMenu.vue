@@ -106,9 +106,7 @@ export default {
 
       let newInstancedMesh = document.createElement('a-instancemeshgroup')
       newInstancedMesh.setAttribute('json', JSON.stringify(newObjectData))
-      newInstancedMesh.setAttribute('geometry', 'primitive: box')
-      newInstancedMesh.setAttribute('body', 'type: dynamic; mass: 5; shape: none;')
-      newInstancedMesh.setAttribute('shape__main', 'shape: box; halfExtents: 0.2 0.2 0.2')
+      newInstancedMesh.setAttribute('physical', true)
       window._elScene.appendChild(newInstancedMesh)
     }
   }

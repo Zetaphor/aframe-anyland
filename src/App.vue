@@ -10,11 +10,11 @@
       </a-assets>
 
       <a-cylinder id="ground" static-body collision-filter="collidesWith: default, touchable" src="#groundTexture" radius="30" height="0.1"></a-cylinder>
-      <!-- <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky> -->
+      <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
 
       <controller-rig></controller-rig>
 
-      <!-- <a-entity dynamic-body id="testCube" geometry-merger="preserveOriginal: false"
+      <!-- <a-entity dynamic-body id="testCube"
           geometry="primitive: box;"
           data-parentid="testCube"
           mixin="touchable"
@@ -24,7 +24,7 @@
           sleepy
           stretchable>
         </a-entity>
-      <a-entity dynamic-body id="testObject" geometry-merger="preserveOriginal: false"
+      <a-entity dynamic-body id="testObject"
           geometry="primitive: box;"
           data-parentid="testObject"
           mixin="touchable"

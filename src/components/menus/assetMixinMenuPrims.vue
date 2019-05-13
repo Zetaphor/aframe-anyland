@@ -35,13 +35,12 @@
       hoverable sleepy dynamic-body="mass:0" static-grabbable
       grabbable stretchable></a-mixin>
 
-    <a-mixin id="new-object"
-      static-grabbable
+    <a-mixin id="physical-instance-object"
+      :collision-filter="`group: touchable; collidesWith:${$store.state.newPrimCollisionFilter}`"
       sleepy
       grabbable
       stretchable
-      hoverable
-      :collision-filter="`group: touchable; collidesWith:${$store.state.objectCollisionFilter}`">
+      hoverable>
     </a-mixin>
   </div>
 </template>
