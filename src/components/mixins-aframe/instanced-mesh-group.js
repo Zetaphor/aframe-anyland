@@ -119,7 +119,7 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
             // this._oq.set(this.clusterPhysicalEls[type][i].body.shapeOrientations[0])
             // this._q.set(this.clusterPhysicalEls[type][i].object3D.quaternion._x, this.clusterPhysicalEls[type][i].object3D.quaternion._y, this.clusterPhysicalEls[type][i].object3D.quaternion._z, this.clusterPhysicalEls[type][i].object3D.quaternion._w)
             // this._q.multiply(this._oq)
-            // this.clusters[type].setQuaternionAt(i , this._q)
+            this.clusters[type].setQuaternionAt(i , this.clusterPhysicalEls[type][i].body.quaternion)
             this.clusters[type].needsUpdate()
         }
       }
