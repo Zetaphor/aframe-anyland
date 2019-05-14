@@ -43,8 +43,7 @@ export default {
       this.$bus.emit('hideLeftHandMenus')
       let selection = document.getElementById(objectId)
       this.selectionId = objectId
-      if (!selection.children.length) this.partTotal = 1
-      else this.partTotal = selection.children.length
+      this.partTotal = selection.dataset.parttotal
       this.showMenu = true
     },
 

@@ -4,6 +4,8 @@ module.exports.Primitive = window.AFRAME.registerPrimitive('a-instancemeshgroup'
   },
   mappings: {
     json: 'instancedmeshgroup.json',
+    physical: 'instancedmeshgroup.physical',
+    clusterPhysicalEls: 'instancedmeshgroup.clusterPhysicalEls'
   }
 });
 
@@ -29,6 +31,7 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
 
     this._v3 = new window.THREE.Vector3()
     this._q = new window.THREE.Quaternion()
+    this._oq = new window.THREE.Quaternion()
     this._rot = new window.THREE.Euler()
     this._color = new window.THREE.Color()
 
@@ -64,6 +67,9 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
         let id = window.generateUid()
 
         newClusterEl.setAttribute('id', id)
+        newClusterEl.setAttribute('data-parentid', rootElId)
+        newClusterEl.setAttribute('data-instanceid', this.el.id)
+        newClusterEl.setAttribute('data-parttotal', jsonData.geometryTypes[type].length)
         if (type === 'box') newClusterEl.setAttribute('geometry', `primitive:box; width:${jsonData.geometryTypes[type][i].scale[0]}; height:${jsonData.geometryTypes[type][i].scale[1]}; depth:${jsonData.geometryTypes[type][i].scale[2]}`)
         else if (type === 'sphere') newClusterEl.setAttribute('geometry', `primitive:sphere; radius:${jsonData.geometryTypes[type][i].scale[0]}`)
         else if (type === 'cylinder') newClusterEl.setAttribute('geometry', `primitive:cylinder; radius:${jsonData.geometryTypes[type][i].scale[0]} height:${jsonData.geometryTypes[type][i].scale[2]}`)
@@ -72,7 +78,7 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
         newClusterEl.setAttribute('mixin', 'physical-instance-object')
         newClusterEl.setAttribute('class', 'collides')
         newClusterEl.setAttribute('collision-filter', 'group: touchable; collidesWith:' + window.vueObj.$store.state.objectCollisionFilter)
-        newClusterEl.setAttribute('body', 'type: dynamic;')
+        newClusterEl.setAttribute('body', 'type: dynamic; mass: 5')
         if (!this.data.physical) {
           newClusterEl.setAttribute('body', 'mass', 0)
           newClusterEl.setAttribute('static-grabbable', '')
@@ -104,12 +110,16 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
       if (!this.clusterPhysicalEls.hasOwnProperty(type)) continue
       for (let i = 0; i < this.clusterPhysicalEls[type].length; i++) {
         if (!this.clusterPhysicalEls[type][i].body) continue
+        if (!this.clusterPhysicalEls[type][i].object3D) continue
         if (this.clusterPhysicalEls[type][i].body.position.x !== this.clusterPhysicalEls[type][i].body.previousPosition.x || this.clusterPhysicalEls[type][i].body.position.y !== this.clusterPhysicalEls[type][i].body.previousPosition.y ||
           this.clusterPhysicalEls[type][i].body.position.z !== this.clusterPhysicalEls[type][i].body.previousPosition.z || this.clusterPhysicalEls[type][i].body.quaternion.x !== this.clusterPhysicalEls[type][i].body.previousQuaternion.x ||
           this.clusterPhysicalEls[type][i].body.quaternion.y !== this.clusterPhysicalEls[type][i].body.previousQuaternion.y || this.clusterPhysicalEls[type][i].body.quaternion.z !== this.clusterPhysicalEls[type][i].body.previousQuaternion.z ||
           this.clusterPhysicalEls[type][i].body.quaternion.w !== this.clusterPhysicalEls[type][i].body.previousQuaternion.w) {
             this.clusters[type].setPositionAt(i, this._v3.set(this.clusterPhysicalEls[type][i].body.position.x, this.clusterPhysicalEls[type][i].body.position.y, this.clusterPhysicalEls[type][i].body.position.z))
-            this.clusters[type].setQuaternionAt(i , this._q.setFromEuler(this._rot.set(this.clusterPhysicalEls[type][i].body.quaternion.x, this.clusterPhysicalEls[type][i].body.quaternion.y, this.clusterPhysicalEls[type][i].body.quaternion.z, this.clusterPhysicalEls[type][i].body.quaternion.w)))
+            // this._oq.set(this.clusterPhysicalEls[type][i].body.shapeOrientations[0])
+            // this._q.set(this.clusterPhysicalEls[type][i].object3D.quaternion._x, this.clusterPhysicalEls[type][i].object3D.quaternion._y, this.clusterPhysicalEls[type][i].object3D.quaternion._z, this.clusterPhysicalEls[type][i].object3D.quaternion._w)
+            // this._q.multiply(this._oq)
+            // this.clusters[type].setQuaternionAt(i , this._q)
             this.clusters[type].needsUpdate()
         }
       }

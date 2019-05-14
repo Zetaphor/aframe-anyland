@@ -6,23 +6,30 @@
       <a-entity fps-counter position="0.015 0.1 0.1" rotation="0 90 0"></a-entity>
       <gui-button v-if="!$store.state.buildMode" rotation="0 90 0" position="0.011 0.1 -0.06" @createObject="createObject" :event="'createObject'" :width="0.1" :height="0.04" text="Create New Object"></gui-button>
       <gui-button v-else rotation="0 90 0" position="0.011 0.1 -0.06" @finishObject="finishObject" :event="'finishObject'" :width="0.1" :height="0.04" text="Done"></gui-button>
+
+      <!-- <gui-button v-if="$store.state.buildMode && !createPhysical" rotation="0 90 0" position="0.011 -0.1 -0.06" @togglePhysical="createPhysical = true" :event="'togglePhysical'" :width="0.1" :height="0.04" text="Make Physical"></gui-button> -->
+      <!-- <gui-button v-else-if="$store.state.buildMode && createPhysical" rotation="0 90 0" position="0.011 -0.1 -0.06" @togglePhysical="createPhysical = false" :event="'togglePhysical'" :width="0.1" :height="0.04" text="Make Static"></gui-button> -->
+
     </a-entity>
   </a-entity>
 </template>
 
 <script>
 import GuiButton from '@/components/gui/guiButton.vue'
+import GuiToggleButton from '@/components/gui/guiToggleButton.vue'
 
 export default {
   name: 'createMenu',
 
   components: {
-    GuiButton
+    GuiButton,
+    GuiToggleButton
   },
 
   data: function () {
     return {
-      showMenu: false
+      showMenu: false,
+      createPhysical: false
     }
   },
 
@@ -105,8 +112,9 @@ export default {
       this.$store.commit('clearNewObjectPrims')
 
       let newInstancedMesh = document.createElement('a-instancemeshgroup')
+      newInstancedMesh.setAttribute('physical', this.createPhysical)
       newInstancedMesh.setAttribute('json', JSON.stringify(newObjectData))
-      newInstancedMesh.setAttribute('physical', true)
+      newInstancedMesh.setAttribute('id', 'inst-' + window.generateUid())
       window._elScene.appendChild(newInstancedMesh)
     }
   }
