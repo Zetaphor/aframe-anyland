@@ -73,13 +73,13 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
         this.rootInstanceEl.setAttribute('class', 'collides')
         this.rootInstanceEl.setAttribute('collision-filter', 'group: touchable; collidesWith:' + window.vueObj.$store.state.objectCollisionFilter)
         this.rootInstanceEl.setAttribute('body', 'type: dynamic; mass: 5')
-        this.rootInstanceEl.setAttribute('material', 'shader: flat; visible: false')
+        // this.rootInstanceEl.setAttribute('material', 'shader: flat; visible: false')
         this.rootInstancePos.set(jsonData.geometryTypes[type][0].position[0], jsonData.geometryTypes[type][0].position[1], jsonData.geometryTypes[type][0].position[2])
         this.setRootInstance = true
         this.currentIsRoot = true
       }
 
-      for (let i = 0 ; i < jsonData.geometryTypes[type].length ; i ++) {
+      for (let i = 0; i < jsonData.geometryTypes[type].length ; i ++) {
         if (this.currentIsRoot) {
           this.currentIsRoot = false
           continue
@@ -100,47 +100,7 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
           shape: newShape,
           offset: new window.THREE.Vector3().subVectors(this._v3.set(jsonData.geometryTypes[type][i].position[0], jsonData.geometryTypes[type][i].position[1], jsonData.geometryTypes[type][i].position[2]), this.rootInstancePos)
         })
-
-        // else {
-          // let newClusterEl = document.createElement('a-entity')
-          // let id = window.generateUid()
-
-          // newClusterEl.setAttribute('id', id)
-          // newClusterEl.setAttribute('data-parentid', rootElId)
-          // newClusterEl.setAttribute('data-instanceid', this.el.id)
-          // newClusterEl.setAttribute('data-parttotal', jsonData.geometryTypes[type].length)
-          // if (type === 'box') newClusterEl.setAttribute('geometry', `primitive:box; width:${jsonData.geometryTypes[type][i].scale[0]}; height:${jsonData.geometryTypes[type][i].scale[1]}; depth:${jsonData.geometryTypes[type][i].scale[2]}`)
-          // else if (type === 'sphere') newClusterEl.setAttribute('geometry', `primitive:sphere; radius:${jsonData.geometryTypes[type][i].scale[0]}`)
-          // else if (type === 'cylinder') newClusterEl.setAttribute('geometry', `primitive:cylinder; radius:${jsonData.geometryTypes[type][i].scale[0]} height:${jsonData.geometryTypes[type][i].scale[2]}`)
-          // newClusterEl.setAttribute('material', 'visible: false')
-          // newClusterEl.setAttribute('position', `${jsonData.geometryTypes[type][i].position[0]} ${jsonData.geometryTypes[type][i].position[1]} ${jsonData.geometryTypes[type][i].position[2]}`)
-          // newClusterEl.setAttribute('mixin', 'physical-instance-object')
-          // newClusterEl.setAttribute('class', 'collides')
-          // newClusterEl.setAttribute('collision-filter', 'group: touchable; collidesWith:' + window.vueObj.$store.state.objectCollisionFilter)
-          // newClusterEl.setAttribute('body', 'type: dynamic; mass: 5')
-
-          // if (i === 0) {
-          //   rootElId = id
-          //   prevId = id
-          // }
-          // else {
-          //   newClusterEl.setAttribute('constraint', 'type: lock; collideConnected: false; target: #' + prevId)
-          //   prevId = id
-          // }
-
-          // if (typeof this.clusterPhysicalEls[type] === 'undefined') this.clusterPhysicalEls[type] = []
-          // this.clusterPhysicalEls[type][i] = newClusterEl
-
-          // window._elScene.appendChild(newClusterEl)
-        // }
       }
-      // if (!this.data.physical) {
-      //   if (newBodyShapes.length) {
-      //     for (let index = 0; index < newBodyShapes.length; index++) {
-
-      //     }
-      //   }
-      // }
 
       window._elScene.object3D.add(this.clusters[type])
     }
@@ -148,9 +108,8 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
     window._elScene.appendChild(this.rootInstanceEl)
 
     this.rootInstanceEl.addEventListener('body-loaded', function () {
-      console.log('Body loaded')
-      for (let index = 0; index < rootObjectShapes.length; index++) {
-        this.body.addShape(rootObjectShapes[index].shape, rootObjectShapes[index].offset)
+      for (let i = 0; i < rootObjectShapes.length; i++) {
+        this.body.addShape(rootObjectShapes[i].shape, rootObjectShapes[i].offset)
       }
       console.log(this.body)
     })
@@ -159,36 +118,18 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
   },
 
   tick: function () {
+    // It groups objects by their shape type \o/
+    // console.log(this.rootInstanceEl.body)
+    for (let i = 0; i < this.rootInstanceEl.body.shapes.length; i++) {
+      let iterationType = 'box'
+      if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.BOX) iterationType = 'box'
+      else if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.SPHERE) iterationType = 'sphere'
 
-    // for (const type in this.clusters) {
-    //   if (!this.clusters.hasOwnProperty(type)) continue
-    //     for (let index = 0; index < this.clusters[type].length; index++) {
-    //       const element = this.clusters[type][index];
-
-
-    //     }
-    //   }
-    // }
-
-    // for (let index = 0; index < this.rootInstanceEl.body.shapeOffsets.length; index++) {
-      // Need to iterate through both the different types of body shapes and set their update position/offset based on the body position/rotation and body.shapeOffsets
-
-    // }
-
-    // for (const type in this.clusterPhysicalEls) {
-    //   if (!this.clusterPhysicalEls.hasOwnProperty(type)) continue
-    //   for (let i = 0; i < this.clusterPhysicalEls[type].length; i++) {
-    //     if (!this.clusterPhysicalEls[type][i].body) continue
-    //     if (!this.clusterPhysicalEls[type][i].object3D) continue
-    //     if (this.clusterPhysicalEls[type][i].body.position.x !== this.clusterPhysicalEls[type][i].body.previousPosition.x || this.clusterPhysicalEls[type][i].body.position.y !== this.clusterPhysicalEls[type][i].body.previousPosition.y ||
-    //       this.clusterPhysicalEls[type][i].body.position.z !== this.clusterPhysicalEls[type][i].body.previousPosition.z || this.clusterPhysicalEls[type][i].body.quaternion.x !== this.clusterPhysicalEls[type][i].body.previousQuaternion.x ||
-    //       this.clusterPhysicalEls[type][i].body.quaternion.y !== this.clusterPhysicalEls[type][i].body.previousQuaternion.y || this.clusterPhysicalEls[type][i].body.quaternion.z !== this.clusterPhysicalEls[type][i].body.previousQuaternion.z ||
-    //       this.clusterPhysicalEls[type][i].body.quaternion.w !== this.clusterPhysicalEls[type][i].body.previousQuaternion.w) {
-    //         this.clusters[type].setPositionAt(i, this._v3.set(this.clusterPhysicalEls[type][i].body.position.x, this.clusterPhysicalEls[type][i].body.position.y, this.clusterPhysicalEls[type][i].body.position.z))
-    //         this.clusters[type].setQuaternionAt(i , this.clusterPhysicalEls[type][i].body.quaternion)
-    //         this.clusters[type].needsUpdate()
-    //     }
-    //   }
-    // }
+      let offset = new window.THREE.Vector3().copy(this.rootInstanceEl.body.shapeOffsets[i]).applyQuaternion(this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
+      let position = this._v3.copy(this.rootInstanceEl.body.shapes[i].body.position).add(offset)
+      this.clusters[iterationType].setPositionAt(i, position)
+      this.clusters[iterationType].setQuaternionAt(i, this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
+      this.clusters[iterationType].needsUpdate()
+    }
   }
 })
