@@ -113,6 +113,7 @@ export default {
 
       let newInstancedMesh = document.createElement('a-instancemeshgroup')
       newInstancedMesh.setAttribute('physical', this.createPhysical)
+      newInstancedMesh.setAttribute('rigid', true)
       newInstancedMesh.setAttribute('json', JSON.stringify(newObjectData))
       newInstancedMesh.setAttribute('id', 'inst-' + window.generateUid())
       window._elScene.appendChild(newInstancedMesh)
