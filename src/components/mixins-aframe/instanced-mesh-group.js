@@ -36,9 +36,11 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
     this._color = new window.THREE.Color()
 
     this.setRootInstance = false
+    this.currentIsRoot = false
     this.rootInstanceEl = document.createElement('a-entity')
     let id = 'root-' + window.generateUid()
     this.rootInstanceEl.setAttribute('id', id)
+    this.rootInstanceEl.setAttribute('data-parentid', id)
     this.rootInstanceEl.setAttribute('data-instanceid', this.el.id)
     this.rootInstancePos = new window.THREE.Vector3()
 
@@ -74,9 +76,14 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
         this.rootInstanceEl.setAttribute('material', 'shader: flat; visible: false')
         this.rootInstancePos.set(jsonData.geometryTypes[type][0].position[0], jsonData.geometryTypes[type][0].position[1], jsonData.geometryTypes[type][0].position[2])
         this.setRootInstance = true
+        this.currentIsRoot = true
       }
 
       for (let i = 0 ; i < jsonData.geometryTypes[type].length ; i ++) {
+        if (this.currentIsRoot) {
+          this.currentIsRoot = false
+          continue
+        }
         this.clusters[type].setQuaternionAt( i , this._q.setFromEuler(this._rot.fromArray(jsonData.geometryTypes[type][i].rotation)) )
         this.clusters[type].setPositionAt( i , this._v3.fromArray(jsonData.geometryTypes[type][i].position))
         this.clusters[type].setScaleAt( i , this._v3.fromArray(jsonData.geometryTypes[type][i].scale))
@@ -152,9 +159,21 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
   },
 
   tick: function () {
-    for (let index = 0; index < this.rootInstanceEl.body.shapeOffsets.length; index++) {
+
+    // for (const type in this.clusters) {
+    //   if (!this.clusters.hasOwnProperty(type)) continue
+    //     for (let index = 0; index < this.clusters[type].length; index++) {
+    //       const element = this.clusters[type][index];
+
+
+    //     }
+    //   }
+    // }
+
+    // for (let index = 0; index < this.rootInstanceEl.body.shapeOffsets.length; index++) {
       // Need to iterate through both the different types of body shapes and set their update position/offset based on the body position/rotation and body.shapeOffsets
-    }
+
+    // }
 
     // for (const type in this.clusterPhysicalEls) {
     //   if (!this.clusterPhysicalEls.hasOwnProperty(type)) continue
