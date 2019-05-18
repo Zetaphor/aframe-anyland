@@ -72,8 +72,11 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
         this.rootInstanceEl.setAttribute('mixin', 'physical-instance-object')
         this.rootInstanceEl.setAttribute('class', 'collides')
         this.rootInstanceEl.setAttribute('collision-filter', 'group: touchable; collidesWith:' + window.vueObj.$store.state.objectCollisionFilter)
-        this.rootInstanceEl.setAttribute('body', 'type: dynamic; mass: 5')
-        // this.rootInstanceEl.setAttribute('material', 'shader: flat; visible: false')
+        if (this.data.physical) this.rootInstanceEl.setAttribute('body', 'type: dynamic; mass: 5')
+        else {
+          this.rootInstanceEl.setAttribute('body', 'type: dynamic; mass: 0')
+          this.rootInstanceEl.setAttribute('static-grabbable', '')
+        }
         this.rootInstancePos.set(jsonData.geometryTypes[type][0].position[0], jsonData.geometryTypes[type][0].position[1], jsonData.geometryTypes[type][0].position[2])
         this.setRootInstance = true
         this.currentIsRoot = true
@@ -111,25 +114,25 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
       for (let i = 0; i < rootObjectShapes.length; i++) {
         this.body.addShape(rootObjectShapes[i].shape, rootObjectShapes[i].offset)
       }
-      console.log(this.body)
     })
 
     console.log('Clusters', this.clusters)
   },
 
   tick: function () {
-    // It groups objects by their shape type \o/
-    // console.log(this.rootInstanceEl.body)
+    let shapeOffset = {}
     for (let i = 0; i < this.rootInstanceEl.body.shapes.length; i++) {
       let iterationType = 'box'
       if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.BOX) iterationType = 'box'
       else if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.SPHERE) iterationType = 'sphere'
+      if (typeof shapeOffset[iterationType] === 'undefined') shapeOffset[iterationType] = 0
 
       let offset = new window.THREE.Vector3().copy(this.rootInstanceEl.body.shapeOffsets[i]).applyQuaternion(this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
       let position = this._v3.copy(this.rootInstanceEl.body.shapes[i].body.position).add(offset)
-      this.clusters[iterationType].setPositionAt(i, position)
-      this.clusters[iterationType].setQuaternionAt(i, this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
+      this.clusters[iterationType].setPositionAt(shapeOffset[iterationType], position)
+      this.clusters[iterationType].setQuaternionAt(shapeOffset[iterationType], this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
       this.clusters[iterationType].needsUpdate()
+      shapeOffset[iterationType] += 1
     }
   }
 })
