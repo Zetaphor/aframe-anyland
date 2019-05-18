@@ -38,10 +38,6 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
     this.setRootInstance = false
     this.currentIsRoot = false
     this.rootInstanceEl = document.createElement('a-entity')
-    let id = 'root-' + window.generateUid()
-    this.rootInstanceEl.setAttribute('id', id)
-    this.rootInstanceEl.setAttribute('data-parentid', id)
-    this.rootInstanceEl.setAttribute('data-instanceid', this.el.id)
     this.rootInstancePos = new window.THREE.Vector3()
 
     let rootObjectShapes = []
@@ -69,6 +65,10 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
         else if (type === 'sphere') this.rootInstanceEl.setAttribute('geometry', `primitive:sphere; radius:${jsonData.geometryTypes[type][0].scale[0]}`)
         else if (type === 'cylinder') this.rootInstanceEl.setAttribute('geometry', `primitive:cylinder; radius:${jsonData.geometryTypes[type][0].scale[0]} height:${jsonData.geometryTypes[type][0].scale[2]}`)
         this.rootInstanceEl.setAttribute('position', `${jsonData.geometryTypes[type][0].position[0]} ${jsonData.geometryTypes[type][0].position[1]} ${jsonData.geometryTypes[type][0].position[2]}`)
+        let id = 'root-' + window.generateUid()
+        this.rootInstanceEl.setAttribute('id', id)
+        this.rootInstanceEl.setAttribute('data-parentid', id)
+        this.rootInstanceEl.setAttribute('data-instanceid', this.el.id)
         this.rootInstanceEl.setAttribute('mixin', 'physical-instance-object')
         this.rootInstanceEl.setAttribute('class', 'collides')
         this.rootInstanceEl.setAttribute('collision-filter', 'group: touchable; collidesWith:' + window.vueObj.$store.state.objectCollisionFilter)
