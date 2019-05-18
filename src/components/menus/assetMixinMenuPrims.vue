@@ -37,7 +37,7 @@
 
     <a-mixin id="physical-instance-object"
       :collision-filter="`group: touchable; collidesWith:${$store.state.newPrimCollisionFilter}`"
-      sleepy="speedLimit: 0"
+      sleepy
       grabbable
       stretchable
       hoverable>
