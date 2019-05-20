@@ -5,7 +5,6 @@ module.exports.Primitive = window.AFRAME.registerPrimitive('a-instancemeshgroup'
   mappings: {
     json: 'instancedmeshgroup.json',
     physical: 'instancedmeshgroup.physical',
-    clusterPhysicalEls: 'instancedmeshgroup.clusterPhysicalEls',
     rigid: 'instancedmeshgroup.rigid'
   }
 });
@@ -26,8 +25,7 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
     const jsonData = JSON.parse(this.data.json)
 
     this.clusters = {}
-
-    this.clusterPhysicalEls = {}
+    this.hiddenClusters = {}
 
     this._v3 = new window.THREE.Vector3()
     this._q = new window.THREE.Quaternion()
@@ -87,14 +85,16 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
           this.currentIsRoot = false
           continue
         }
+
+        // Create instanced geometry
         this.clusters[type].setQuaternionAt( i , this._q.setFromEuler(this._rot.fromArray(jsonData.geometryTypes[type][i].rotation)) )
         this.clusters[type].setPositionAt( i , this._v3.fromArray(jsonData.geometryTypes[type][i].position))
         this.clusters[type].setScaleAt( i , this._v3.fromArray(jsonData.geometryTypes[type][i].scale))
         this._color.setHSL(Math.random(), Math.random(), Math.random())
         this.clusters[type].setColorAt( i , this._color)
 
+        // Create physics body children
         let newShape = null
-
         if (type === 'box') newShape = new window.CANNON.Box(new window.CANNON.Vec3().set(jsonData.geometryTypes[type][i].scale[0] / 2, jsonData.geometryTypes[type][i].scale[1] / 2, jsonData.geometryTypes[type][i].scale[2] / 2))
         else if (type === 'sphere') newShape = new window.CANNON.Sphere(jsonData.geometryTypes[type][i].scale[0])
         else if (type === 'cylinder') newShape = new window.CANNON.Cylinder(jsonData.geometryTypes[type][i].scale[0], jsonData.geometryTypes[type][i].scale[1], jsonData.geometryTypes[type][i].scale[2])
@@ -103,6 +103,19 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
           shape: newShape,
           offset: new window.THREE.Vector3().subVectors(this._v3.set(jsonData.geometryTypes[type][i].position[0], jsonData.geometryTypes[type][i].position[1], jsonData.geometryTypes[type][i].position[2]), this.rootInstancePos)
         })
+
+        // Create hidden raycasting geometry
+        let newHiddenGeometry = null
+        if (type === 'box') newHiddenGeometry = new window.THREE.BoxBufferGeometry(jsonData.geometryTypes[type][i].scale[0], jsonData.geometryTypes[type][i].scale[1], jsonData.geometryTypes[type][i].scale[2])
+        else if (type === 'sphere') newHiddenGeometry = new window.THREE.SphereBufferGeometry(jsonData.geometryTypes[type][i].scale[0], 6, 4)
+        else if (type === 'cylinder') newHiddenGeometry = new window.THREE.CylinderBufferGeometry(jsonData.geometryTypes[type][i].scale[0], jsonData.geometryTypes[type][i].scale[1], jsonData.geometryTypes[type][i].scale[2], 5)
+        var object = new window.THREE.Mesh(newHiddenGeometry)
+        object.userData.index = i
+        object.position.fromArray(jsonData.geometryTypes[type][i].position)
+        object.scale.fromArray(jsonData.geometryTypes[type][i].scale)
+        object.rotation.fromArray(jsonData.geometryTypes[type][i].rotation)
+        window._hiddenScene.add(object)
+        object.updateMatrixWorld()
       }
 
       window._elScene.object3D.add(this.clusters[type])

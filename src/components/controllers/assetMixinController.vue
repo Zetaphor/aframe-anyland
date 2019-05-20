@@ -13,6 +13,7 @@
     stretchEndButtons: gripup;
     colliderEndEventProperty: clearedEls;"
     :raycaster="`objects: ${$store.state.raycastObjectsFilter}`"
+    custom-raycaster
     :line="$store.getters.raycasterLine"
     select-objects></a-mixin>
 </template>

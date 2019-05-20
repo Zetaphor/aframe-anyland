@@ -52,6 +52,7 @@ require('three-instanced-mesh')(window.THREE)
 require('@/components/mixins-aframe/static-grabbable')
 // require('@/components/mixins-aframe/select-objects')
 require('@/components/mixins-aframe/instanced-mesh-group')
+require('@/components/mixins-aframe/custom-raycaster')
 
 import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
 import AssetMixinController from '@/components/controllers/assetMixinController.vue'
@@ -67,6 +68,7 @@ export default {
 
   mounted () {
       window._elScene = document.getElementById('scene')
+      window._hiddenScene = new window.THREE.Scene()
   },
 
   data: function () {
