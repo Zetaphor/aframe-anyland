@@ -99,11 +99,13 @@ export default new Vuex.Store({
     toggleLeftLaser ({ commit }, val) {
       commit('setShowLeftLaser', val)
       window._elLeftHand.setAttribute('raycaster', {enabled: val, showLine: val})
+      window._elLeftHand.setAttribute('custom-raycaster', {enabled: val, showLine: val})
     },
 
     toggleRightLaser ({ commit }, val) {
       commit('setShowRightLaser', val)
       window._elRightHand.setAttribute('raycaster', {enabled: val, showLine: val})
+      window._elRightHand.setAttribute('custom-raycaster', {enabled: val, showLine: val})
     }
   }
 })

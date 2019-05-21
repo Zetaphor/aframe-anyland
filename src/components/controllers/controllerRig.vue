@@ -77,7 +77,8 @@ export default {
       camera: null,
       snapReady: false,
       gamepad: null,
-      selectionId: null
+      selectedInstance: null,
+      selectedInstanceIndex: -1
     }
   },
 
@@ -106,8 +107,13 @@ export default {
 
   methods: {
     intersectionStart: function (evt) {
-      if (evt.detail.els[0].dataset.parentid) this.selectionId = evt.detail.els[0].dataset.parentid
-      else this.selectionId = null
+      if (evt.detail.instanceObject && evt.detail.instanceObject.length && evt.detail.instanceObjectIndex !== -1) {
+          this.selectedInstance = evt.detail.instanceObject
+          this.selectedInstanceIndex = evt.detail.instanceObjectIndex
+      } else {
+          this.selectedInstance = ''
+          this.selectedInstanceIndex = -1
+      }
     },
 
     buttonDown: function (button) {
@@ -129,7 +135,7 @@ export default {
     },
 
     checkForSelection: function () {
-      if (this.selectionId) this.$bus.emit('selectObject', this.selectionId)
+      if (this.selectedInstance && this.selectedInstance.length && this.selectedInstanceIndex !== -1) this.$bus.emit('selectObject', this.selectedInstance)
     },
 
     checkRotation: function () {

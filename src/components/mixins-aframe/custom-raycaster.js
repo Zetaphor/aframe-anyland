@@ -1,10 +1,8 @@
-/* global MutationObserver */
-
 // var registerComponent = require('../core/component').registerComponent;
-var THREE = window.THREE;
-// var utils = require('../utils/');
+var THREE = window.THREE
 
-var warn = console.warn;
+// eslint-disable-next-line
+var warn = console.warn
 
 // Defines selectors that should be 'safe' for the MutationObserver used to
 // refresh the whitelist. Matches classnames, IDs, and presence of attributes.
@@ -39,7 +37,7 @@ var EVENTS = {
  * @member {number} prevCheckTime - Previous time intersection was checked. To help interval.
  * @member {object} raycaster - three.js Raycaster.
  */
-window.AFRAME.registerComponent('custom-raycaster', {
+module.exports.Component = window.AFRAME.registerComponent('custom-raycaster', {
   schema: {
     autoRefresh: {default: true},
     direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
@@ -60,17 +58,26 @@ window.AFRAME.registerComponent('custom-raycaster', {
     this.unitLineEndVec3 = new THREE.Vector3();
     this.intersectedEls = [];
     this.intersections = [];
+    this.intersections = [];
     this.newIntersectedEls = [];
     this.newIntersections = [];
     this.objects = [];
     this.prevCheckTime = undefined;
     this.prevIntersectedEls = [];
+
+    this.instanceObject = '';
+    this.instanceObjectIndex = -1;
+    this.prevInstanceObject = '';
+    this.prevInstanceObjectIndex = -1;
     this.rawIntersections = [];
+    this.rawInstancedIntersections = [];
+    this.instanceDistance = -1
+
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
     this.setDirty = this.setDirty.bind(this);
     this.updateLine = this.updateLine.bind(this);
-    // this.observer = new MutationObserver(this.setDirty);
+    this.observer = new MutationObserver(this.setDirty);
     this.dirty = true;
     this.lineEndVec3 = new THREE.Vector3();
     this.otherLineEndVec3 = new THREE.Vector3();
@@ -148,15 +155,15 @@ window.AFRAME.registerComponent('custom-raycaster', {
 
   addEventListeners: function () {
     if (!this.data.autoRefresh) { return; }
-    // this.observer.observe(window._hiddenScene, OBSERVER_CONFIG);
-    window._hiddenScene.addEventListener('object3dset', this.setDirty);
-    window._hiddenScene.addEventListener('object3dremove', this.setDirty);
+    this.observer.observe(this.el.sceneEl, OBSERVER_CONFIG);
+    this.el.sceneEl.addEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.addEventListener('object3dremove', this.setDirty);
   },
 
   removeEventListeners: function () {
-    // this.observer.disconnect();
-    window._hiddenScene.removeEventListener('object3dset', this.setDirty);
-    window._hiddenScene.removeEventListener('object3dremove', this.setDirty);
+    this.observer.disconnect();
+    this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
   },
 
   /**
@@ -174,11 +181,10 @@ window.AFRAME.registerComponent('custom-raycaster', {
     var els;
 
     // If objects not defined, intersect with everything.
-    // els = data.objects
-    //   ? window._hiddenScene.querySelectorAll(data.objects)
-    //   : window._hiddenScene.querySelectorAll('*');
-    this.objects = window._hiddenScene.children
-    // this.objects = this.flattenObject3DMaps(els);
+    els = data.objects
+      ? this.el.sceneEl.querySelectorAll(data.objects)
+      : this.el.sceneEl.querySelectorAll('*');
+    this.objects = this.flattenObject3DMaps(els);
     this.dirty = false;
   },
 
@@ -214,21 +220,26 @@ window.AFRAME.registerComponent('custom-raycaster', {
     var newIntersections = this.newIntersections;
     var prevIntersectedEls = this.prevIntersectedEls;
     var rawIntersections = this.rawIntersections;
+    var rawInstancedIntersections = this.rawInstancedIntersections;
+    var instanceObject = this.instanceObject
+    var instanceObjectIndex = this.instanceObjectIndex
+    var prevInstanceObject = this.prevInstanceObject
+    var prevInstanceObjectIndex = this.prevInstanceObjectIndex
 
     // Refresh the object whitelist if needed.
     if (this.dirty) { this.refreshObjects(); }
 
     // Store old previously intersected entities.
     copyArray(this.prevIntersectedEls, this.intersectedEls);
+    this.prevInstanceObject = this.instanceObject
+    this.prevInstanceObjectIndex = this.instanceObjectIndex
 
     // Raycast.
     this.updateOriginDirection();
     rawIntersections.length = 0;
+    rawInstancedIntersections.length = 0;
     this.raycaster.intersectObjects(this.objects, true, rawIntersections);
-    // if (rawIntersections.length) {
-    //   console.log(rawIntersections[0])
-    // }
-
+    this.raycaster.intersectObjects(window._hiddenScene.children, true, rawInstancedIntersections);
     // Only keep intersections against objects that have a reference to an entity.
     intersections.length = 0;
     intersectedEls.length = 0;
@@ -238,10 +249,10 @@ window.AFRAME.registerComponent('custom-raycaster', {
       if (data.showLine && intersection.object === el.getObject3D('line')) {
         continue;
       }
-      // if (intersection.object.el) {
+      if (intersection.object.el) {
         intersections.push(intersection);
-        // intersectedEls.push(intersection.object.el);
-      // }
+        intersectedEls.push(intersection.object.el);
+      }
     }
 
     // Get newly intersected entities.
@@ -251,6 +262,22 @@ window.AFRAME.registerComponent('custom-raycaster', {
       if (prevIntersectedEls.indexOf(intersections[i].object.el) === -1) {
         newIntersections.push(intersections[i]);
         newIntersectedEls.push(intersections[i].object.el);
+      }
+    }
+
+    instanceObject = ''
+    instanceObjectIndex = -1
+    this.instanceDistance = -1
+    // Get newly intersected instance entities.
+    for (i = 0; i < rawInstancedIntersections.length; i++) {
+      if (prevInstanceObject !== rawInstancedIntersections[i].object.userData.instanceId) {
+        instanceObject = rawInstancedIntersections[i].object.userData.instanceId
+        instanceObjectIndex = rawInstancedIntersections[i].object.userData.index
+        this.instanceDistance = rawInstancedIntersections[i].distance
+      }
+      else if (prevInstanceObjectIndex !== rawInstancedIntersections[i].object.userData.index) {
+        instanceObjectIndex = rawInstancedIntersections[i].object.userData.index
+        this.instanceDistance = rawInstancedIntersections[i].distance
       }
     }
 
@@ -272,9 +299,11 @@ window.AFRAME.registerComponent('custom-raycaster', {
     }
 
     // Emit all intersections at once on raycasting entity.
-    if (newIntersections.length) {
+    if (newIntersections.length || instanceObject.length) {
       this.intersectionDetail.els = newIntersectedEls;
       this.intersectionDetail.intersections = newIntersections;
+      this.intersectionDetail.instanceObject = instanceObject
+      this.intersectionDetail.instanceObjectIndex = instanceObjectIndex
       el.emit(EVENTS.INTERSECTION, this.intersectionDetail);
     }
 
@@ -294,6 +323,8 @@ window.AFRAME.registerComponent('custom-raycaster', {
         } else {
           lineLength = intersections[0].distance;
         }
+      } else if (this.instanceDistance !== -1) {
+        lineLength = this.instanceDistance
       }
       this.drawLine(lineLength);
     }
