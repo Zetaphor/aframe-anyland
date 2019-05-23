@@ -110,14 +110,13 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
 
         // Create hidden raycasting geometry
         let newHiddenGeometry = null
-        if (type === 'box') newHiddenGeometry = new window.THREE.BoxBufferGeometry(jsonData.geometryTypes[type][i].scale[0] * 4, jsonData.geometryTypes[type][i].scale[1] * 4, jsonData.geometryTypes[type][i].scale[2] * 4)
-        else if (type === 'sphere') newHiddenGeometry = new window.THREE.SphereBufferGeometry(jsonData.geometryTypes[type][i].scale[0], 6, 4)
+        if (type === 'box') newHiddenGeometry = new window.THREE.BoxBufferGeometry(jsonData.geometryTypes[type][i].scale[0], jsonData.geometryTypes[type][i].scale[1], jsonData.geometryTypes[type][i].scale[2])
+        else if (type === 'sphere') newHiddenGeometry = new window.THREE.SphereBufferGeometry(jsonData.geometryTypes[type][i].scale[0], 8, 6)
         else if (type === 'cylinder') newHiddenGeometry = new window.THREE.CylinderBufferGeometry(jsonData.geometryTypes[type][i].scale[0], jsonData.geometryTypes[type][i].scale[1], jsonData.geometryTypes[type][i].scale[2], 5)
         var object = new window.THREE.Mesh(newHiddenGeometry)
         object.userData.index = i
         object.userData.instanceId = this.el.id
         object.position.fromArray(jsonData.geometryTypes[type][i].position)
-        object.scale.fromArray(jsonData.geometryTypes[type][i].scale)
         object.rotation.fromArray(jsonData.geometryTypes[type][i].rotation)
         window._hiddenScene.add(object)
         object.updateMatrixWorld()
