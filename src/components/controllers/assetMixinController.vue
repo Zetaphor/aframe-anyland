@@ -3,7 +3,8 @@
     physics-collider
     phase-shift
     :collision-filter="`group:hands; collidesWith: ${$store.state.handCollisionFilter}; collisionForces: false`"
-    static-body="shape: sphere; sphereRadius: 0.1"
+    static-body="shape: none;"
+    shape__hand="shape: box; halfExtents: 0.05 0.04 0.1; offset: 0 -0.01 0"
     super-hands="colliderEvent: collisions;
     colliderEventProperty: els;
     colliderEndEvent: collisions;
@@ -15,6 +16,7 @@
     :raycaster="`objects: ${$store.state.raycastObjectsFilter}`"
     :custom-raycaster="`objects: ${$store.state.raycastObjectsFilter}`"
     :line="$store.getters.raycasterLine"
+    grab-raycaster
     select-objects></a-mixin>
 </template>
 

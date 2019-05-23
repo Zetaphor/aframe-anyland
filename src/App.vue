@@ -53,6 +53,7 @@ require('@/components/mixins-aframe/static-grabbable')
 // require('@/components/mixins-aframe/select-objects')
 require('@/components/mixins-aframe/instanced-mesh-group')
 require('@/components/mixins-aframe/custom-raycaster')
+require('@/components/mixins-aframe/grab-raycaster')
 
 import AssetMixinMenuPrims from '@/components/menus/assetMixinMenuPrims.vue'
 import AssetMixinController from '@/components/controllers/assetMixinController.vue'
