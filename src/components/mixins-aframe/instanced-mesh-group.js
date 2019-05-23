@@ -38,6 +38,8 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
     this.rootInstanceEl = document.createElement('a-entity')
     this.rootInstancePos = new window.THREE.Vector3()
 
+    this.debugCounter = 0
+
     let rootObjectShapes = []
 
     let totalParts = 0
@@ -116,6 +118,7 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
         var object = new window.THREE.Mesh(newHiddenGeometry)
         object.userData.index = i
         object.userData.instanceId = this.el.id
+        object.name = this.el.id + '-' + i
         object.position.fromArray(jsonData.geometryTypes[type][i].position)
         object.rotation.fromArray(jsonData.geometryTypes[type][i].rotation)
         window._hiddenScene.add(object)
@@ -139,18 +142,27 @@ module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup',
 
   tick: function () {
     let shapeOffset = {}
+    let currentHiddenObject = null
+    let iterationType = 'box'
     for (let i = 0; i < this.rootInstanceEl.body.shapes.length; i++) {
-      let iterationType = 'box'
       if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.BOX) iterationType = 'box'
       else if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.SPHERE) iterationType = 'sphere'
       if (typeof shapeOffset[iterationType] === 'undefined') shapeOffset[iterationType] = 0
 
+      // Update meshes
       let offset = new window.THREE.Vector3().copy(this.rootInstanceEl.body.shapeOffsets[i]).applyQuaternion(this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
       let position = this._v3.copy(this.rootInstanceEl.body.shapes[i].body.position).add(offset)
       this.clusters[iterationType].setPositionAt(shapeOffset[iterationType], position)
       this.clusters[iterationType].setQuaternionAt(shapeOffset[iterationType], this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
       this.clusters[iterationType].needsUpdate()
       shapeOffset[iterationType] += 1
+
+      currentHiddenObject = window._hiddenScene.getObjectByName(this.el.id + '-' + i)
+      if (currentHiddenObject !== undefined) {
+        currentHiddenObject.position.copy(position)
+        currentHiddenObject.rotation.copy(this.rootInstanceEl.body.shapes[i].body.quaternion)
+        currentHiddenObject.updateMatrixWorld()
+      }
     }
   }
 })
