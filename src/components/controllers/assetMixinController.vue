@@ -16,7 +16,6 @@
     :raycaster="`objects: ${$store.state.raycastObjectsFilter}`"
     :custom-raycaster="`objects: ${$store.state.raycastObjectsFilter}`"
     :line="$store.getters.raycasterLine"
-    grab-raycaster
     select-objects></a-mixin>
 </template>
 

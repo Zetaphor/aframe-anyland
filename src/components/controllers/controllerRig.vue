@@ -39,6 +39,7 @@
         hand-controls="left"
         laser-controls="hand:left"
         @raycaster-intersection="intersectionStart"
+        grab-raycaster="hand:left"
         teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: grip; type: line; maxLength: 50">
       <prim-menu></prim-menu>
       <settings-menu></settings-menu>
@@ -49,6 +50,7 @@
         mixin="controller"
         hand-controls="right"
         laser-controls="hand:right"
+        grab-raycaster="hand:right"
         @raycaster-intersection="intersectionStart"
         teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: grip; type: line; maxLength: 50">
     </a-entity>
