@@ -70,6 +70,7 @@ export default {
   mounted () {
       window._elScene = document.getElementById('scene')
       window._hiddenScene = new window.THREE.Scene()
+      window._hiddenGeometries = []
   },
 
   data: function () {

@@ -116,13 +116,15 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
         else if (type === 'sphere') newHiddenGeometry = new window.THREE.SphereBufferGeometry(jsonData.geometryTypes[type][i].scale[0], 8, 6)
         else if (type === 'cylinder') newHiddenGeometry = new window.THREE.CylinderBufferGeometry(jsonData.geometryTypes[type][i].scale[0], jsonData.geometryTypes[type][i].scale[1], jsonData.geometryTypes[type][i].scale[2], 5)
         var object = new window.THREE.Mesh(newHiddenGeometry)
-        object.userData.index = i
-        object.userData.instanceId = this.el.id
-        object.name = this.el.id + '-' + i
+        object.name = this.rootInstanceEl.id + '|' + i
+        object.userData.instanceId = this.rootInstanceEl.id
+        object.userData.instanceIndex = i
+        object.userData.hiddenIndex = window._hiddenScene.children.length
         object.position.fromArray(jsonData.geometryTypes[type][i].position)
         object.rotation.fromArray(jsonData.geometryTypes[type][i].rotation)
         window._hiddenScene.add(object)
         object.updateMatrixWorld()
+        window._hiddenGeometries.push(object)
       }
 
       window._elScene.object3D.add(this.clusters[type])
@@ -157,7 +159,7 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
       this.clusters[iterationType].needsUpdate()
       shapeOffset[iterationType] += 1
 
-      currentHiddenObject = window._hiddenScene.getObjectByName(this.el.id + '-' + i)
+      currentHiddenObject = window._hiddenScene.getObjectByName(this.rootInstanceEl.id + '|' + i)
       if (currentHiddenObject !== undefined) {
         currentHiddenObject.position.copy(position)
         currentHiddenObject.rotation.copy(this.rootInstanceEl.body.shapes[i].body.quaternion)
