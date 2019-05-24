@@ -1,4 +1,4 @@
-module.exports.Primitive = window.AFRAME.registerPrimitive('a-instancemeshgroup', {
+window.AFRAME.registerPrimitive('a-instancemeshgroup', {
   defaultComponents: {
     instancedmeshgroup: {},
   },
@@ -9,7 +9,7 @@ module.exports.Primitive = window.AFRAME.registerPrimitive('a-instancemeshgroup'
   }
 });
 
-module.exports.component = window.AFRAME.registerComponent('instancedmeshgroup', {
+window.AFRAME.registerComponent('instancedmeshgroup', {
   mappings: {
     json: {default: ''},
     physical: {default: false},

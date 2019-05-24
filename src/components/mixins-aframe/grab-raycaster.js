@@ -1,4 +1,4 @@
-module.exports.component = window.AFRAME.registerComponent('grab-raycaster', {
+window.AFRAME.registerComponent('grab-raycaster', {
   schema: {
     direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
     origin: {type: 'vec3', default: {x: 0, y: -0.05, z: 0.1}},

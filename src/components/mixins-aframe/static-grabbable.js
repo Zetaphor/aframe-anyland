@@ -1,4 +1,4 @@
-module.exports.component = window.AFRAME.registerComponent('static-grabbable', {
+window.AFRAME.registerComponent('static-grabbable', {
   init: function () {
     let el = this.el
     let hovering = false
