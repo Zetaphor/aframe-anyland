@@ -31,7 +31,10 @@ module.exports.component = window.AFRAME.registerComponent('grab-raycaster', {
     this.updateOriginDirection()
     let rawInstancedIntersections = []
     this.raycaster.intersectObjects(window._hiddenScene.children, true, rawInstancedIntersections);
-    if (rawInstancedIntersections.length) console.log(rawInstancedIntersections)
+    if (rawInstancedIntersections.length) console.log(rawInstancedIntersections[0])
+    // Get ID and child index of rootElement with physics, dispatchEvent on that element telling it to watch X hand
+    // Fire another event on mouseup telling it to stop watching that hand
+    // On tick when watching update offset
   },
 
   /**
