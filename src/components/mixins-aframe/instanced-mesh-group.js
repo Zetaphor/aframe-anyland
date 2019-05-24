@@ -38,6 +38,10 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
     this.rootInstanceEl = document.createElement('a-entity')
     this.rootInstancePos = new window.THREE.Vector3()
 
+    this.grabbing = false
+    this.grabbingIndex = -1
+    this.grabHand = ''
+
     this.debugCounter = 0
 
     let rootObjectShapes = []
@@ -86,7 +90,7 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
         this.currentIsRoot = true
       }
 
-      for (let i = 0; i < jsonData.geometryTypes[type].length ; i ++) {
+      for (let i = 0; i < jsonData.geometryTypes[type].length; i ++) {
         if (this.currentIsRoot) {
           this.currentIsRoot = false
           continue
@@ -139,6 +143,12 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
       }
     })
 
+    this.rootInstanceEl.addEventListener('instance-part-grab', function (evt) {
+      this.grabbing = true
+      this.grabHand = evt.detail.hand
+      this.grabbingIndex = evt.detail.index
+    })
+
     console.log('Clusters', this.clusters)
   },
 
@@ -151,7 +161,7 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
       else if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.SPHERE) iterationType = 'sphere'
       if (typeof shapeOffset[iterationType] === 'undefined') shapeOffset[iterationType] = 0
 
-      // Update meshes
+      // Update instance geometry position/rotation
       let offset = new window.THREE.Vector3().copy(this.rootInstanceEl.body.shapeOffsets[i]).applyQuaternion(this._q.copy(this.rootInstanceEl.body.shapes[i].body.quaternion))
       let position = this._v3.copy(this.rootInstanceEl.body.shapes[i].body.position).add(offset)
       this.clusters[iterationType].setPositionAt(shapeOffset[iterationType], position)
@@ -159,6 +169,7 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
       this.clusters[iterationType].needsUpdate()
       shapeOffset[iterationType] += 1
 
+      // Update hidden mesh position/rotation
       currentHiddenObject = window._hiddenScene.getObjectByName(this.rootInstanceEl.id + '|' + i)
       if (currentHiddenObject !== undefined) {
         currentHiddenObject.position.copy(position)
