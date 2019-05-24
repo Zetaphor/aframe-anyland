@@ -2,39 +2,34 @@ window.AFRAME.registerComponent('grab-raycaster', {
   schema: {
     direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
     origin: {type: 'vec3', default: {x: 0, y: -0.05, z: 0.1}},
-    useWorldCoordinates: {default: false}
+    useWorldCoordinates: {default: false},
+    hand: {type: 'string'}
   },
 
   init: function () {
     let el = this.el
     this.rawInstancedIntersections = []
-    this.dirty = false
-    this.setDirty = this.setDirty.bind(this);
-
+    this.checkIntersections = this.checkIntersections.bind(this);
     this.raycaster = new window.THREE.Raycaster();
     this.updateOriginDirection();
-
-    el.addEventListener('mousedown', this.setDirty)
-  },
-
-  tick: function () {
-    if (this.dirty) this.checkIntersections()
-  },
-
-  setDirty: function () {
-    this.dirty = true
+    el.addEventListener('mousedown', this.checkIntersections)
   },
 
   checkIntersections: function () {
-    this.dirty = false
     this.raycaster.far = 0.21
     this.updateOriginDirection()
-    let rawInstancedIntersections = []
-    this.raycaster.intersectObjects(window._hiddenScene.children, true, rawInstancedIntersections);
-    if (rawInstancedIntersections.length) console.log(rawInstancedIntersections[0])
-    // Get ID and child index of rootElement with physics, dispatchEvent on that element telling it to watch X hand
-    // Fire another event on mouseup telling it to stop watching that hand
-    // On tick when watching update offset
+    this.rawInstancedIntersections.length = 0
+    this.raycaster.intersectObjects(window._hiddenGeometries, true, this.rawInstancedIntersections)
+
+    if (this.rawInstancedIntersections.length) {
+      let rootInstace = document.getElementById(this.rawInstancedIntersections[0].object.userData.instanceId)
+      rootInstace.dispatchEvent(new CustomEvent('instance-part-grab', {
+        detail: {
+          index: this.rawInstancedIntersections[0].object.userData.instanceIndex,
+          hand: this.data.hand
+        }
+      }))
+    }
   },
 
   /**
