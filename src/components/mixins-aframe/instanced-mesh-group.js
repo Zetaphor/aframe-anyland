@@ -38,9 +38,10 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
     this.rootInstanceEl = document.createElement('a-entity')
     this.rootInstancePos = new window.THREE.Vector3()
 
-    this.grabbing = false
-    this.grabbingIndex = -1
-    this.grabHand = ''
+    this.editing = false
+    this.editingIndex = -1
+    this.editHand = ''
+    this.editPart = null
 
     this.debugCounter = 0
 
@@ -143,19 +144,88 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
       }
     })
 
+    let that = this
     this.rootInstanceEl.addEventListener('instance-part-grab', function (evt) {
-      this.grabbing = true
-      this.grabHand = evt.detail.hand
-      this.grabbingIndex = evt.detail.index
+      that.editHand = evt.detail.hand === 'left' ? window._elLeftHand : window._elRightHand
+      that.editingIndex = evt.detail.index
+      that.editing = true
+      that.createEditPart()
     })
 
-    console.log('Clusters', this.clusters)
+    this.rootInstanceEl.addEventListener('instance-part-grab-stop', function () {
+      that.editing = false
+      that.editHand = null
+      that.editingIndex = -1
+      that.finalizeEditPart()
+    })
+
+    // console.log('Clusters', this.clusters)
+  },
+
+  getType: function (type) {
+    if (type === window.CANNON.Shape.types.BOX) return 'box'
+    else if (type === window.CANNON.Shape.types.SPHERE) return 'sphere'
+    else if (type === window.CANNON.Shape.types.CYLINDER) return 'cylinder'
+  },
+
+  createEditPart: function () {
+    let newId = 'prim-' + window.generateUid()
+    let newPrim = document.createElement('a-entity')
+    newPrim.setAttribute('mixin', 'prim-' + this.getType(this.rootInstanceEl.body.shapes[this.editingIndex].body.shapes[this.editingIndex].type))
+    newPrim.setAttribute('id', newId)
+    newPrim.setAttribute('class', 'collides')
+
+    let offset = new window.THREE.Vector3().copy(this.rootInstanceEl.body.shapeOffsets[this.editingIndex]).applyQuaternion(this._q.copy(this.rootInstanceEl.body.shapes[this.editingIndex].body.quaternion))
+    let position = new window.THREE.Vector3().copy(this.rootInstanceEl.body.shapes[this.editingIndex].body.position).add(offset)
+
+    newPrim.setAttribute('position', position)
+    newPrim.setAttribute('rotation', this.rootInstanceEl.body.shapes[this.editingIndex].body.quaternion)
+    window._elScene.appendChild(newPrim)
+    this.editPart = newPrim
+
+    this.rootInstanceEl.body.shapes.splice(this.editingIndex, 1)
+    this.rootInstanceEl.body.shapeOffsets.splice(this.editingIndex, 1)
+    this.rootInstanceEl.body.shapeOrientations.splice(this.editingIndex, 1)
+    this.rootInstanceEl.body.computeAABB()
+    this.rootInstanceEl.body.updateMassProperties()
+    this.rootInstanceEl.body.updateBoundingRadius()
+  },
+
+  finalizeEditPart: function () {
+    let newPartGeometry = this.editPart.getAttribute('geometry')
+
+    // this.clusters[newPartGeometry.primitive].setPositionAt()
+    // Create physics body children
+    let newShape = null
+    if (newPartGeometry.primitive === 'box') newShape = new window.CANNON.Box(new window.CANNON.Vec3().set(this.editPart.object3D.scale.x / 2, this.editPart.object3D.scale.y / 2, this.editPart.object3D.scale.z / 2))
+    else if (newPartGeometry.primitive === 'sphere') newShape = new window.CANNON.Sphere(this.editPart.object3D.scale.x)
+    else if (newPartGeometry.primitive === 'cylinder') newShape = new window.CANNON.Cylinder(this.editPart.object3D.scale.x, this.editPart.object3D.scale.y, this.editPart.object3D.scale.z)
+
+    this.rootInstanceEl.body.addShape(newShape, new window.THREE.Vector3().subVectors(new window.THREE.Vector3().copy(this.editPart.object3D.position), this.rootInstancePos))
+
+
+    // Create hidden raycasting geometry
+    let newHiddenGeometry = null
+    if (newPartGeometry.primitive === 'box') newHiddenGeometry = new window.THREE.BoxBufferGeometry(this.editPart.object3D.scale.x, this.editPart.object3D.scale.y, this.editPart.object3D.scale.z)
+    else if (newPartGeometry.primitive === 'sphere') newHiddenGeometry = new window.THREE.SphereBufferGeometry(this.editPart.object3D.scale.x, 8, 6)
+    else if (newPartGeometry.primitive === 'cylinder') newHiddenGeometry = new window.THREE.CylinderBufferGeometry(this.editPart.object3D.scale.x, this.editPart.object3D.scale.y, this.editPart.object3D.scale.z, 5)
+    var object = new window.THREE.Mesh(newHiddenGeometry)
+    object.name = this.rootInstanceEl.id + '|' + this.rootInstanceEl.body.shapes.length
+    object.userData.instanceId = this.rootInstanceEl.id
+    object.userData.instanceIndex = this.rootInstanceEl.body.shapes.length
+    object.userData.hiddenIndex = window._hiddenScene.children.length
+    object.position.copy(this.editPart.object3D.position)
+    object.rotation.copy(this.editPart.object3D.rotation)
+    window._hiddenScene.add(object)
+    object.updateMatrixWorld()
+    window._hiddenGeometries.push(object)
   },
 
   tick: function () {
     let shapeOffset = {}
     let currentHiddenObject = null
     let iterationType = 'box'
+
     for (let i = 0; i < this.rootInstanceEl.body.shapes.length; i++) {
       if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.BOX) iterationType = 'box'
       else if (this.rootInstanceEl.body.shapes[i].type === window.CANNON.Shape.types.SPHERE) iterationType = 'sphere'
