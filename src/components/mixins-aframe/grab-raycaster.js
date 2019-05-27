@@ -9,10 +9,14 @@ window.AFRAME.registerComponent('grab-raycaster', {
   init: function () {
     let el = this.el
     this.rawInstancedIntersections = []
-    this.checkIntersections = this.checkIntersections.bind(this);
-    this.raycaster = new window.THREE.Raycaster();
-    this.updateOriginDirection();
+    this.checkIntersections = this.checkIntersections.bind(this)
+    this.clearIntersections = this.clearIntersections.bind(this)
+    this.raycaster = new window.THREE.Raycaster()
+    this.grabbing = false
+    this.grabRoot = null
+    this.updateOriginDirection()
     el.addEventListener('mousedown', this.checkIntersections)
+    el.addEventListener('mouseup', this.clearIntersections)
   },
 
   checkIntersections: function () {
@@ -22,14 +26,19 @@ window.AFRAME.registerComponent('grab-raycaster', {
     this.raycaster.intersectObjects(window._hiddenGeometries, true, this.rawInstancedIntersections)
 
     if (this.rawInstancedIntersections.length) {
-      let rootInstace = document.getElementById(this.rawInstancedIntersections[0].object.userData.instanceId)
-      rootInstace.dispatchEvent(new CustomEvent('instance-part-grab', {
+      this.grabRoot = document.getElementById(this.rawInstancedIntersections[0].object.userData.instanceId)
+      this.grabRoot.dispatchEvent(new CustomEvent('instance-part-grab', {
         detail: {
           index: this.rawInstancedIntersections[0].object.userData.instanceIndex,
           hand: this.data.hand
         }
       }))
+      this.grabbing = true
     }
+  },
+
+  clearIntersections: function () {
+    if (this.grabbing) this.grabRoot.dispatchEvent(new CustomEvent('instance-part-grab-stop'))
   },
 
   /**
