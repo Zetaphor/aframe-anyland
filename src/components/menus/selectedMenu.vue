@@ -42,6 +42,7 @@ export default {
     openMenu: function (objectId) {
       this.$bus.emit('hideLeftHandMenus')
       let selection = document.getElementById(objectId)
+      console.log(selection)
       this.selectionId = objectId
       this.partTotal = selection.dataset.parttotal
       this.showMenu = true

@@ -20,6 +20,8 @@ window.AFRAME.registerComponent('grab-raycaster', {
   },
 
   checkIntersections: function () {
+    if (!window.vueObj.$store.state.editMode) return
+
     this.raycaster.far = 0.21
     this.updateOriginDirection()
     this.rawInstancedIntersections.length = 0

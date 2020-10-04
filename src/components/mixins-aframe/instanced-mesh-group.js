@@ -136,7 +136,7 @@ window.AFRAME.registerComponent('instancedmeshgroup', {
     }
 
     window._elScene.appendChild(this.rootInstanceEl)
-    this.el.setAttribute('data-parttotal', totalParts)
+    this.rootInstanceEl.setAttribute('data-parttotal', totalParts)
 
     this.rootInstanceEl.addEventListener('body-loaded', function () {
       for (let i = 0; i < rootObjectShapes.length; i++) {

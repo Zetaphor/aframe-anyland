@@ -15,6 +15,7 @@ export default new Vuex.Store({
     raycastObjectsFilter: '.collides',
 
     buildMode: false,
+    editMode: false,
     newObjectEl: null,
     newObjectPrims: [],
 
